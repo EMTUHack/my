@@ -70,6 +70,10 @@
         "APPLICATION_OPEN": {
             "description": "'true' if it is, 'false' otherwise",
             "value": "true"
+        },
+        "DEBUG": {
+            "description": "Allow or disallow debug mode",
+            "value": "true"
         }
     },
     "keywords": ["python", "hackathon", "django"]
