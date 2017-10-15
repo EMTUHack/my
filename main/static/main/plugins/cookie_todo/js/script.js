@@ -1,10 +1,13 @@
 var inputBox;
 
 function first_run() {
-	list = ["RG", "Identidade da Universidade", "Notebook", "Carregadores", "Caderno e Caneta", "Travesseiro", "Saco de Dormir", "Escova/Pasta de Dente"]
+	list = ["RG", "ID da Universidade", "Notebook", "Carregadores", "Caderno e Caneta", "Travesseiro", "Saco de Dormir", "Escova/Pasta de Dente"]
 	for (item in list)
-		addItem(list[item]);
-	saveList();
+	{
+		inputBox.val(list[item]);
+		add();
+	}
+	console.log('List first run');
 }
 
 function addItem(item) {
@@ -16,7 +19,7 @@ function addItem(item) {
 	it.fadeIn(300);
 	it.removeClass('me-want');
 	it.hover(addRemoveIcon, addRemoveIcon);
-
+	console.log(item + ' added');
 }
 
 function saveList() {
@@ -27,19 +30,21 @@ function saveList() {
 	var cookie = list.join(', ');
 	cookie = cookie.substring(0, cookie.length);
 	Cookies.set('list', cookie, { expires: 90 });
-
+	console.log('List: ' + Cookies.get('list'));
 }
 
 function loadList() {
+
+	// FIX: fix this
 
 	var items = Cookies.get('list');
 
 	if(items === undefined)
 	{
-		first_run();
+		// first_run();
 		return;
 	}
-	if (items === '')
+	if (items == '')
 		return;
 
 
@@ -48,7 +53,7 @@ function loadList() {
 	for (i in items) {
 		addItem(items[i]);
 	}
-
+	console.log('List Loaded');
 }
 
 function add() {
@@ -62,11 +67,10 @@ function add() {
 	inputBox.val('');
 
 	saveList();
-
 }
 
 function remove(element) {
-
+	console.log('Removing item');
 	var item = $(this);
 
 	item.find('i').removeClass("icon middle aligned trash");
@@ -90,7 +94,7 @@ function clear() {
 		items.remove();
 		saveList();
 	});
-
+	console.log('List cleared');
 }
 
 function addRemoveIcon() {
@@ -122,7 +126,10 @@ $(document).ready(function() {
 	inputBox.keypress(onKeyPress);
 	$('#list').on('click', '.to-do', remove);
 
-	loadList();
+	if (Cookies.get('list') === undefined)
+		first_run();
+	else
+		loadList();
 	$('#script-error').remove();
 
 });
