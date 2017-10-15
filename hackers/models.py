@@ -239,6 +239,7 @@ class Application(models.Model):
     essay = models.TextField(null=True, blank=True)
     # Purchase
     sleeping_bag = models.BooleanField(default=False)
+    # TODO: Conseguir preço de travesseiro!
     pillow = models.BooleanField(default=False)
 
     # Internal
