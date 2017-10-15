@@ -33,7 +33,7 @@ def auth_url(request):
 
     # Payload
     kvps = {'client_id': app_id, 'redirect_uri': canvas_url, 'state': state, 'allow_signup': 'false'}
-    temp
+
     # Format permissions if needed
     if perms:
         kvps['scope'] = " ".join(perms)
