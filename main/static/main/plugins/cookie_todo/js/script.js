@@ -35,8 +35,6 @@ function saveList() {
 
 function loadList() {
 
-	// FIX: fix this
-
 	var items = Cookies.get('list');
 
 	if(items === undefined)
