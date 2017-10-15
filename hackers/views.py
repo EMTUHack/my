@@ -272,6 +272,7 @@ def github_login_response(request):
         code = request.GET['code']
     except:
         # User cancelled login
+        gffs
         request = gh_methods.login_canceled(request)
         return redirect(reverse('index'))
 
