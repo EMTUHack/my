@@ -4,13 +4,9 @@
 {% include 'main/sidebar.html' %}
 {% endblock %}
 {% block extend_scripts %}
-<script src="{% static 'main/plugins/datatables/datatables.min.js' %}"></script>
 <script src="{% static 'main/js/sweetalert/sweetalert.min.js' %}"></script>
 <script src="{% static 'main/js/sidebar.js' %}"></script>
 <script src="{% static 'main/js/admin.js' %}"></script>
-{% endblock %}
-{% block extend_style %}
-<link rel="stylesheet" type="text/css" href="{% static 'main/plugins/datatables/datatables.min.css' %}"/>
 {% endblock %}
 {% block content %}
 <div class="content">
