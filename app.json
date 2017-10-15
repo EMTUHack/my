@@ -1,0 +1,76 @@
+{
+    "name": "My Hack the Campus",
+    "env": {
+        "DJANGO_SECRET": {
+            "description": "Django's secret key",
+            "generator": "secret"
+        },
+        "ALLOWED_HOSTS": {
+            "description": "List of hosts to allow",
+            "value": "['*']"
+        },
+        "HACKATHON_NAME": {
+            "description": "Name your event!",
+            "value": "Hack the Campus"
+        },
+        "TEAM_MAX_SIZE": {
+            "description": "Max team size",
+            "value": "4"
+        },
+        "TOKEN_SIZE": {
+            "description": "Max hacker token size. (Bigger == secure & impractical)",
+            "value": "6"
+        },
+        "HELPER": {
+            "description": "URL of your helper app",
+            "value": "https://helper.yourdomain.com"
+        },
+        "CHAT": {
+            "description": "URL of your chat app",
+            "value": "https://chat.yourdomain.com"
+        },
+        "ROOT_URL": {
+            "description": "App's root url",
+            "value": "http://localhost:8000"
+        },
+        "ADMIN_ACCOUNT": {
+            "description": "Error logs are sent to this address",
+            "value": "admin@example.com"
+        },
+        "EMAIL_ACCOUNT": {
+            "description": "Account that sends email",
+            "value": "bot@example.com"
+        },
+        "EMAIL_PASSWORD": "bot@example.com",
+        "FACEBOOK_HANDLE": "",
+        "FACEBOOK_KEY": {
+            "description": "Facebook App ID",
+            "value": "12345"
+        },
+        "FACEBOOK_SECRET": {
+            "description": "Facebook App Secret",
+            "value": "s3cret"
+        },
+        "GITHUB_KEY": {
+            "description": "GitHub App ID",
+            "value": "12345"
+        },
+        "GITHUB_SECRET": {
+            "description": "GitHub App Secret",
+            "value": "s3cret"
+        },
+        "HACKATHON_STARTED": {
+            "description": "'true' if it has, 'false' otherwise",
+            "value": "false"
+        },
+        "HACKATHON_ENDED": {
+            "description": "'true' if it has, 'false' otherwise",
+            "value": "false"
+        },
+        "APPLICATION_OPEN": {
+            "description": "'true' if it is, 'false' otherwise",
+            "value": "true"
+        }
+    },
+    "keywords": ["python", "hackathon", "django"]
+}

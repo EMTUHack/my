@@ -1,0 +1,59 @@
+{% load staticfiles %}
+    <div id="sidebar" ng-class="{open: showSidebar}" class="ng-scope">
+        <div ui-sref="app.dashboard" class="logo item" href="/">
+            <a href="{% url 'dashboard' %}"><img class="big-logo" src="{% static 'main/img/logo.png' %}"></a>
+        </div>
+
+        <div class="item {% if sbar == 'dashboard' %}active{% endif %}" href="/">
+            <a href="{% url 'dashboard' %}" class="fill-div">Dashboard</a>
+        </div>
+
+        <div ng-show="currentUser.verified">
+            {% if hack_application_open %}
+            <div class="item {% if sbar == 'application' %}active{% endif %}">
+                <a href="{% url 'hackers:application' %}" class="fill-div">Aplicação</a>
+            </div>
+            {% endif %}
+            {% if hack_has_started and user.hacker.is_checkedin %}
+            <div class="item {% if sbar == 'team' %}active{% endif %}">
+                <a href="{% url 'team' %}" class="fill-div">Equipe</a>
+            </div>
+            <div class="item {% if sbar == 'data' %}active{% endif %}">
+                <a href="{% url 'dashboard' %}" class="fill-div">Dados</a>
+            </div>
+            <div class="item {% if sbar == 'eventos' %}active{% endif %}">
+                <a href="{% url 'dashboard' %}" class="fill-div">Eventos</a>
+            </div>
+            <div class="item">
+                <a href="{{ helper }}" class="fill-div">Helper</a>
+            </div>
+            <div class="item">
+                <a href="{{ chat }}" class="fill-div">Chat</a>
+            </div>
+            {% endif %}
+
+            {% if user.is_superuser %}
+            <div class="item {% if sbar == 'admin' %}active{% endif %}">
+                <a href="{% url 'admin' %}" class="fill-div">Admin</a>
+            </div>
+            <div class="item {% if sbar == 'checkin' %}active{% endif %}">
+                <a href="{% url 'checkin' %}" class="fill-div">Check In</a>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <div class="item" ng-click="logout()">
+            <a href="{% url 'logout' %}" class="fill-div">Logout</a>
+        </div>
+
+        <div class="note ng-binding">
+            {{ hackathon_name }}
+        </div>
+
+    </div>
+
+    <div class="tab ng-scope" onclick="toggle_sidebar()">
+        <img id="stat_icon" ng-show="!showSidebar" src="{% static 'main/img/logo.png' %}" class="">
+        <span id="stat_x" class="close ng-hide hide-X" ng-show="showSidebar">✕</span>
+    </div>

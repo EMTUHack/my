@@ -1,0 +1,63 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block sidebar %}
+{% include 'main/sidebar.html' %}
+{% endblock %}
+{% block extend_scripts %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.16/r-2.2.0/datatables.min.js"></script>
+<script src="{% static 'main/js/sweetalert/sweetalert.min.js' %}"></script>
+<script src="{% static 'main/js/sidebar.js' %}"></script>
+<script src="{% static 'main/js/checkin.js' %}"></script>
+{% endblock %}
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/r-2.2.0/datatables.min.css"/>
+{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="container">
+        <div id="team" class="page">
+            <div class="divided title">
+                Check In
+            </div>
+            <div class="ui stackable centered page grid">
+                <div class="column">
+                    <div style="display: none;" id="team_error" class="ui error message">
+                    </div>
+                    <div class="ui segment">
+                        <div id="anchor">
+                            <div class="ui form">
+                                <div class="form">
+                                    <div class="title">
+                                        Pesquise hackers:
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="field">
+                                    <input maxlength="20" id="search_hackers" class="ui input" type="text" placeholder="Digite o nome, email ou token do hacker...">
+                                </div>
+                                <div class="ui divider"></div>
+                                <button class="ui fluid blue button" type="button" onclick="search_hackers()"><i class="ui icon search"></i> Pesquisar</button>
+                                <table id="example" class="display" width="100%"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var csrf = "{{ csrf_token }}";
+    var search_hackers_url = "{% url 'hackers:search_hackers' %}";
+    var check_in_hacker_url = "{% url 'hackers:check_in_hacker' %}";
+    var get_hacker_check_in_url = "{% url 'hackers:get_hacker_check_in' %}";
+    var notify_check_in_hacker_url = "{% url 'hackers:notify_check_in_hacker' %}";
+
+    $("#search_hackers").on('keyup', function (e) {
+        if (e.keyCode == 13) {
+            search_hackers();
+        }
+    });
+</script>
+{% endblock %}

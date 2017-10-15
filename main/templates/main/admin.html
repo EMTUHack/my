@@ -1,0 +1,82 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block sidebar %}
+{% include 'main/sidebar.html' %}
+{% endblock %}
+{% block extend_scripts %}
+<script src="{% static 'main/plugins/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'main/js/sweetalert/sweetalert.min.js' %}"></script>
+<script src="{% static 'main/js/sidebar.js' %}"></script>
+<script src="{% static 'main/js/admin.js' %}"></script>
+{% endblock %}
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'main/plugins/datatables/datatables.min.css' %}"/>
+{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="container">
+        <div id="team" class="page">
+            <div class="divided title">
+                Admin
+            </div>
+            <div class="ui stackable centered page grid">
+                <div class="column">
+                    <div style="display: none;" id="team_error" class="ui error message">
+                    </div>
+                    <div class="ui segment">
+                        <div id="anchor">
+                            <div class="ui form">
+                                <div class="form">
+                                    <div class="title">
+                                        Importar hackers:
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <br />
+                                    <textarea id="batch_hackers" placeholder="Cole o conteúdo do CSV aqui" rows="5">{{ user.hacker.team.project }}</textarea>
+                                </div>
+                                <div style="display: none;" id="batch_anchor" class="ui accordion">
+                                    <div class="title">
+                                        <i class="dropdown icon"></i>
+                                        <span id="batch_title_1"></span>
+                                    </div>
+                                    <div id="batch_content_1" class="content">
+                                        <p class="transition hidden"></p>
+                                    </div>
+                                    <div class="title">
+                                        <i class="dropdown icon"></i>
+                                        <span id="batch_title_2"></span>
+                                    </div>
+                                    <div id="batch_content_2" class="content">
+                                        <p class="transition hidden"></p>
+                                    </div>
+                                    <div class="title">
+                                        <i class="dropdown icon"></i>
+                                        <span id="batch_title_3"></span>
+                                    </div>
+                                    <div id="batch_content_3" class="content">
+                                        <p class="transition hidden"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="ui divider"></div>
+
+                            <button class="ui fluid green button" type="button" onclick="import_hackers()"><i class="ui icon upload"></i> Submeter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var csrf = "{{ csrf_token }}";
+    var import_hackers_url = "{% url 'hackers:batch_import_hackers' %}";
+    var search_hackers_url = "{% url 'hackers:search_hackers' %}";
+    var check_in_hacker_url = "{% url 'hackers:check_in_hacker' %}";
+    var get_hacker_check_in_url = "{% url 'hackers:get_hacker_check_in' %}";
+    $('.ui.accordion').accordion();
+</script>
+{% endblock %}

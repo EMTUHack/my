@@ -1,0 +1,12 @@
+<br>
+<div class="ui divider"></div>
+<br>
+<div class="header divided title">
+    Equipe
+</div>
+<div class="description">
+    {% if user.hacker.has_team %}Que bom que já tem uma equipe :)<br>Edite-a abaixo:{% else %}Crie ou junte-se a uma equipe abaixo.<br>(OBS: Mesmo que decida participar por conta própria, é necessário criar uma equipe para submeter seu projeto){% endif %}<br>Lembrando que as equipes podem ter até 4 participantes.<br>
+</div>
+<a href="{% url 'team' %}" class="ui pink button">
+    {% if user.hacker.has_team %}Edite sua equipe e projeto!{% else %}Crie ou junte-se a uma equipe!{% endif %}
+</a>

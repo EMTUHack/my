@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html ng-app="reg">
+  <head lang="pt-br">
+    <base href="/">
+    {% load staticfiles %}
+    {% load sass_tags %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> Hack the Campus 2017 </title>
+
+    <script src="{% static 'main/js/jquery/jquery.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'main/css/normalize.css' %}">
+
+    <!-- Angular stuff -->
+<!--     <script src="plugins/angular/angular.min.js"></script>
+    <script src="plugins/angular-ui-router/release/angular-ui-router.min.js"></script> -->
+
+    <!-- Angular app -->
+    <!-- <script src="build/app.js"></script> -->
+
+    <!-- Semantic-UI -->
+    <link rel="stylesheet" href="{% static 'main/plugins/semantic-ui/semantic.min.css' %}">
+    <script src="{% static 'main/plugins/semantic-ui/semantic.min.js' %}"></script>
+
+    <!-- Sweet Alert -->
+    <script src="{% static 'main/js/sweetalert/sweetalert.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'main/css/sweetalert/sweetalert.css' %}">
+
+    <!-- showdown! -->
+    <!-- <script src="plugins/showdown/dist/showdown.min.js"></script> -->
+
+    <!-- Custom styling -->
+    <link rel="stylesheet" href="{% static 'main/css/site.css' %}">
+    <link href='//fonts.googleapis.com/css?family=Montserrat:700' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css'>
+    <link href="{% sass_src 'main/css/site.scss' %}" rel="stylesheet" type="text/css" />
+
+    <!-- Page scripts -->
+    {% block extend_scripts %}{% endblock %}
+
+    <!-- Page style -->
+    {% block extend_style %}{% endblock %}
+
+      <!-- iOS Web Clip -->
+    <link rel="apple-touch-icon" href="{% static 'main/img/favicon.png' %}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link rel="icon" href="{% static 'main/img/favicon.png' %}">
+
+  </head>
+  <body>
+    <div class="container ng-scope" id="root-view" ui-view=""><div id="base" class="ng-scope">
+        {% block sidebar %}{% endblock %}
+        {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

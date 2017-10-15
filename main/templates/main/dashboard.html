@@ -1,0 +1,116 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block sidebar %}
+{% include 'main/sidebar.html' %}
+{% endblock %}
+{% block extend_scripts %}
+<script src="{% static 'main/js/jquery/js.cookie.js' %}"></script>
+<script src="{% static 'main/js/sidebar.js' %}"></script>
+<script src="{% static 'main/plugins/cookie_todo/js/script.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="container">
+        <div id="dashboard" class="page">
+            <div class="divided title">
+                Dashboard
+            </div>
+            <div class="ui stackable centered page grid">
+                <div class="column">
+                    <div class="ui status segment">
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="ui small success message" ng-show="error">
+                            {{ message | safe }}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        <div class="small title">
+                            Seu Status:
+                        </div>
+                        <br>
+
+                        <div class="state {{ user.hacker.state.0 }}">
+                            {{ user.hacker.state.1 }}
+                        </div>
+
+                        <div class="ui divider"></div>
+
+                        <div ng-if="user.profile.name.length > 0">
+                            <p>
+                                <strong>
+                                    Olá novamente, {{ user.hacker.first_name }}!
+                                </strong>
+                            </p>
+                        </div>
+                        <div class="title">conseguir travesseiro!!</div>
+                        <br>
+                        {% if user.hacker.is_incomplete %}
+                        <div class="description">
+                            <strong>
+                                Sua aplicação ainda está incompleta.
+                            </strong>
+                            <p>
+                                É necessário completá-la para participar do {{ hackathon_name }}
+                            </p>
+                            <p>
+                                <b>Você tem até o dia 21/10 para fazer isso.</b>
+                            </p>
+                            <a href="{% url 'hackers:application' %}" class="ui purple button">
+                                Complete sua aplicação
+                            </a>
+
+                        </div>
+                        {% endif %}
+                        {% if user.hacker.is_confirmed %}
+                        <div class="description">
+                            Sua inscrição e aplicação estão em ordem :)
+                        </div>
+                        {% include 'main/dash_sections/important_info.html' %}
+                        {% include 'main/dash_sections/reminders.html' %}
+                        {% include 'main/dash_sections/access.html' %}
+                        {% if hack_application_open %}
+                        {% include 'main/dash_sections/withdraw.html' %}
+                        {% endif %}
+                        {% endif %}
+                        {% if user.hacker.is_late %}
+                        <div class="description">
+                            <p>
+                                Infelizmente o período para completar sua inscrição para o {{ hackathon_name }} já acabou.
+                            </p>
+                            <p>
+                                Tem sempre o próximo :)
+                            </p>
+                        </div>
+                        {% endif %}
+                        {% if user.hacker.is_checkedin %}
+                        <div class="description">
+                            <p>
+                                Que bom que pôde vir :)
+                            </p>
+                        </div>
+                        {% include 'main/dash_sections/team.html' %}
+                        {% include 'main/dash_sections/data.html' %}
+                        {% include 'main/dash_sections/software.html' %}
+                        {% include 'main/dash_sections/access.html' %}
+                        {% endif %}
+                        {% if user.hacker.is_withdraw %}
+                        <div class="description">
+                            <p>
+                                Você optou por se abster dessa edição do {{ hackathon_name }}.
+                            </p>
+                            <p>
+                                <b>Você tem até o dia 21/10 para reativar sua aplicação.</b>
+                            </p>
+                            <a href="{% url 'hackers:toggle_withdraw' %}" class="ui blue button">
+                                Mudei de ideia!
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

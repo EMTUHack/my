@@ -1,0 +1,10 @@
+dj-database-url
+Django==1.10.5
+gunicorn
+psycopg2
+whitenoise
+facebook-sdk
+libsass
+django-compressor
+django-sass-processor
+requests

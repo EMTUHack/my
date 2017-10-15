@@ -1,0 +1,25 @@
+<br>
+<div class="ui divider"></div>
+<br>
+<div class="header divided title">
+    Acesso
+</div>
+<div class="description">
+    Não consegue lembrar do seu token? Associe sua conta ao seu Facebook ou GitHub!
+</div>
+<p>
+    <div class="header">Acesso por Token</div>
+    <code>Seu Token: {{ user.hacker.token }}</code><br><a class="ui red button tiny" href="{% url 'hackers:change_token' %}">Trocar Token</a>
+</p>
+<p>
+    <div class="header">Acesso pelo Facebook</div>
+    <a href="{% if user.hacker.has_fb_login %}{% url 'hackers:remove_facebook' %}{% else %}{% url 'hackers:facebook_login' %}{% endif %}" class="ui fb-login button">
+        {% if user.hacker.has_fb_login %}Desvincular Facebook{% else %}Vincular Facebook{% endif %}
+    </a>
+</p>
+<p>
+    <div class="header">Acesso pelo GitHub</div>
+    <a href="{% if user.hacker.has_gh_login %}{% url 'hackers:remove_github' %}{% else %}{% url 'hackers:github_login' %}{% endif %}" class="ui gh-login button">
+        {% if user.hacker.has_gh_login %}Desvincular GitHub{% else %}Vincular GitHub{% endif %}
+    </a>
+</p>

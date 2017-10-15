@@ -1,0 +1,195 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block sidebar %}
+{% include 'main/sidebar.html' %}
+{% endblock %}
+{% block extend_scripts %}
+<script src="{% static 'main/js/sidebar.js' %}"></script>
+<script src="{% static 'main/js/team.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="container">
+        <div id="team" class="page">
+            <div class="divided title">
+                Equipe
+            </div>
+            <div class="ui stackable centered page grid">
+                <div class="column">
+                    {% if user.hacker.has_team %}
+                    <div class="header title small"><b>Prazo para submissão de projeto e local: Domingo - 10:00</b></div>
+                    {% endif %}
+                    <div style="display: none;" id="team_error" class="ui error message">
+                    </div>
+                    <div class="ui segment">
+                        <div id="anchor">
+                            {% if not user.hacker.has_team %}
+                            <div class="ui form">
+
+                                <div class="title">
+                                    Entre ou Crie uma Equipe
+                                </div>
+                                <br>
+                                <div class="field">
+                                    <input maxlength="20" id="input_team_name" class="ui input" type="text" placeholder="Escolha o nome da sua equipe...">
+                                </div>
+
+                                <div class="field">
+                                    <button class="ui fluid pink button" type="button" onclick="create_team()">
+                                        Entrar ou Criar Equipe
+                                    </button>
+                                </div>
+
+                            </div>
+                            {% else %}
+                            <div class="ui form">
+                                <div class="form">
+                                    <div class="title">
+                                        Nome da equipe:
+                                    </div>
+                                </div>
+                                <br>
+                                <div id="team_name" class="subheader">
+                                    {{ user.hacker.team.name }}
+                                </div>
+
+                                <br />
+                                <div class="form">
+                                    <div class="title">
+                                        Membros da equipe:
+                                    </div>
+                                </div>
+
+                                <div id="teammates_anchor">
+                                    {% for mate in user.hacker.team.hackers.all %}
+                                    <p class="item">
+                                        {{ mate.name }}
+                                    </p>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="ui divider"></div>
+                                <div class="field">
+                                    <div class="title">
+                                        Descreva seu projeto:
+                                    </div>
+                                    <br />
+                                    <textarea onkeyup="on_project_up()" id="project" placeholder="Em até 300 caracteres" maxlength="300" rows="3">{{ user.hacker.team.project }}</textarea>
+                                </div>
+                                <div class="field">
+                                    <div class="title">
+                                        Onde vocês estão?
+                                    </div>
+                                    <br />
+                                    <input maxlength="20" onkeyup="on_location_up()" type="text" id="location" value="{{ user.hacker.team.location }}" placeholder="Mesa 21...">
+                                </div>
+                                <div class="title">
+                                    Bloquear novos membros?
+                                </div>
+                                <br />
+                                <div class="ui one column center aligned grid">
+                                    <div class="column twelve wide">
+                                        <div class="ui fitted slider checkbox">
+                                            <input onchange="allow_team()" {% if user.hacker.team.block_new_members %}checked{% endif %} id="block_new" type="checkbox">
+                                            <label></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="ui divider"></div>
+
+                            <button class="ui fluid red button" type="button" onclick="leave_team()">Sair da Equipe</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="substitute" style="display: none;">
+    {% if user.hacker.has_team %}
+    <div class="ui form">
+
+        <div class="title">
+            Entre ou Crie uma Equipe
+        </div>
+        <br>
+        <div class="field">
+            <input maxlength="20" id="input_team_name" class="ui input" type="text" placeholder="Escolha o nome da sua equipe...">
+        </div>
+
+        <div class="field">
+            <button class="ui fluid pink button" type="button" onclick="create_team()">
+                Entrar ou Criar Equipe
+            </button>
+        </div>
+
+    </div>
+    {% else %}
+    <div class="ui form">
+        <div class="form">
+            <div class="title">
+                Nome da equipe:
+            </div>
+        </div>
+        <br>
+        <div id="team_name" class="subheader">
+        </div>
+
+        <br />
+        <div class="form">
+            <div class="title">
+                Membros da equipe:
+            </div>
+        </div>
+
+        <div id="teammates_anchor">
+        </div>
+
+        <div class="ui divider"></div>
+        <div class="field">
+            <div class="title">
+                Descreva seu projeto:
+            </div>
+            <br />
+            <textarea onkeyup="on_project_up()" id="project" placeholder="Em até 300 caracteres" maxlength="300" rows="3"></textarea>
+        </div>
+        <div class="field">
+            <div class="title">
+                Onde vocês estão?
+            </div>
+            <br />
+            <input maxlength="20" onkeyup="on_location_up()" type="text" id="location" placeholder="Mesa 21...">
+        </div>
+        <div class="title">
+            Bloquear novos membros?
+        </div>
+        <br />
+        <div class="ui one column center aligned grid">
+            <div class="column twelve wide">
+                <div class="ui fitted slider checkbox">
+                    <input onchange="allow_team()" id="block_new" type="checkbox">
+                    <label></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="ui divider"></div>
+
+    <button class="ui fluid red button" type="button" onclick="leave_team()">Sair da Equipe</button>
+    {% endif %}
+</div>
+
+<script type="text/javascript">
+    var csrf = "{{ csrf_token }}";
+    var create_team_url = "{% url 'hackers:api_enter_team' %}";
+    var leave_team_url = "{% url 'hackers:api_leave_team' %}";
+    var allow_team_url = "{% url 'hackers:api_update_allow_new' %}";
+    var update_project_url = "{% url 'hackers:api_update_project' %}";
+    var update_location_url = "{% url 'hackers:api_update_location' %}";
+</script>
+{% endblock %}

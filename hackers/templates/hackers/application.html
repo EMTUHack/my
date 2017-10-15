@@ -1,0 +1,153 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block sidebar %}
+{% include 'main/sidebar.html' %}
+{% endblock %}
+{% block extend_scripts %}
+<script src="{% static 'main/js/sidebar.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="container">
+        <div class="page">
+            <div class="divided title">
+                Aplicação
+            </div>
+            <div class="ui stackable page grid">
+                <div class="column">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="ui small {{ message.tags }} message" ng-show="error">
+                        {{ message | safe }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    <div class="ui form">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="subheader">* Obrigatório</div>
+                            <br />
+                            <div class="divided title">Informações Básicas</div>
+                            <div class="two fields">
+                                <div class="field {% if form.phone.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.phone.label}}</label>
+                                    <span style="color: red" class="small">{{ form.phone.errors.as_text }}</span>
+                                    {{ form.phone }}
+                                </div>
+                                <div class="field {% if form.age.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.age.label}}</label>
+                                    <span style="color: red" class="small">{{ form.age.errors.as_text }}</span>
+                                    {{ form.age }}
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field {% if form.gender.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.gender.label}}</label>
+                                    <span style="color: red" class="small">{{ form.gender.errors.as_text }}</span>
+                                    {{ form.gender }}
+                                </div>
+                                <div class="field {% if form.shirt_size.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.shirt_size.label}}</label>
+                                    <span style="color: red" class="small">{{ form.shirt_size.errors.as_text }}</span>
+                                    {{ form.shirt_size }}
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field {% if form.university.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.university.label}}</label>
+                                    <span style="color: red" class="small">{{ form.university.errors.as_text }}</span>
+                                    {{ form.university }}
+                                </div>
+                                <div class="field {% if form.enroll_year.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.enroll_year.label}}</label>
+                                    <span style="color: red" class="small">{{ form.enroll_year.errors.as_text }}</span>
+                                    {{ form.enroll_year }}
+                                </div>
+                            </div>
+                            <br />
+                            <div class="divided title">Logístico</div>
+                            <div class="subheader">Não precisa preencher se não tiver</div>
+                            <br />
+                            <div class="two fields">
+                                <div class="field {% if form.diet.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.diet.label}}</label>
+                                    <span style="color: red" class="small">{{ form.diet.errors.as_text }}</span>
+                                    {{ form.diet }}
+                                </div>
+                                <div class="field {% if form.special_needs.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.special_needs.label}}</label>
+                                    <span style="color: red" class="small">{{ form.special_needs.errors.as_text }}</span>
+                                    {{ form.special_needs }}
+                                </div>
+                            </div>
+                            <br />
+                            <div class="divided title">Currículo</div>
+                            <div class="two fields">
+                                <div class="field {% if form.cv_type.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.cv_type.label}}</label>
+                                    <span style="color: red" class="small">{{ form.cv_type.errors.as_text }}</span>
+                                    {{ form.cv_type }}
+                                </div>
+                                <div class="field {% if form.cv.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.cv.label}}</label>
+                                    <span style="color: red" class="small">{{ form.cv.errors.as_text }}</span>
+                                    {{ form.cv }}
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field {% if form.cv2_type.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.cv2_type.label}}</label>
+                                    <span style="color: red" class="small">{{ form.cv2_type.errors.as_text }}</span>
+                                    {{ form.cv2_type }}
+                                </div>
+                                <div class="field {% if form.cv.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.cv2.label}}</label>
+                                    <span style="color: red" class="small">{{ form.cv2.errors.as_text }}</span>
+                                    {{ form.cv2 }}
+                                </div>
+                            </div>
+                            <br />
+                            <div class="divided title">Nos fale um pouco mais</div>
+                            <div class="field {% if form.description.errors.as_text %}error{% endif %}">
+                                <label>{{ form.description.label}}</label>
+                                <span style="color: red" class="small">{{ form.description.errors.as_text }}</span>
+                                {{ form.description }}
+                            </div>
+                            <div class="field {% if form.essay.errors.as_text %}error{% endif %}">
+                                <label>{{ form.essay.label}}</label>
+                                <span style="color: red" class="small">{{ form.essay.errors.as_text }}</span>
+                                {{ form.essay }}
+                            </div>
+                            <br />
+                            <div class="divided title">Compras</div>
+                            <div class="subheader">Os itens abaixo são opcionais e não são gratuitos. Estão disponíveis a preço de custo e são comprados sob demanda. Clique em seus nomes para obter mais informações.<br>Você deve pagar por eles em dinheiro no ato de check-in.<br>Não será necessário devolver após o evento</div>
+                            <br />
+                            <div class="two fields">
+                                <div class="field ui toggle checkbox {% if form.sleeping_bag.errors.as_text %}error{% endif %}">
+                                    <span style="color: red" class="small">{{ form.sleeping_bag.errors.as_text }}</span>
+                                    {{ form.sleeping_bag }}
+                                    <label>{{ form.sleeping_bag.label | safe}}</label>
+                                </div>
+                                <div class="field ui toggle checkbox {% if form.pillow.errors.as_text %}error{% endif %}">
+                                    <span style="color: red" class="small">{{ form.pillow.errors.as_text }}</span>
+                                    {{ form.pillow }}
+                                    <label>{{ form.pillow.label | safe}}</label>
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="ui divider"></div>
+                            <br>
+                            <div class="field">
+                                <button type="submit" class="fluid ui purple button">
+                                    Submeter
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

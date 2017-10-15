@@ -1,0 +1,73 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div style="background: {% static 'main/img/bg2.jpg' %}" id="login">
+    <div class="container">
+        <div class="content">
+            <div class="ui segment">
+
+                <div class="logo">
+                    <img src="{% static 'main/img/logo_bg.jpg' %}">
+                </div>
+
+                <!-- <div class="ui divider"></div> -->
+
+                {% if messages %}
+                {% for message in messages %}
+                <div class="ui small error message" ng-show="error">
+                    {{ message | safe }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                <div ng-show="loginState === 'login'">
+                    <div class="ui login-password form">
+                        <form method="get" action="/token/">
+                            <div class="field">
+                                <input required type="text" name="token" id='token' placeholder="Seu token">
+                            </div>
+                            <div class="field">
+                                <button id="login-password" onclick='$(this).closest("form").attr("action", "/token/" + $("#token").val());' type="submit" class="fluid ui login button">
+                                    Entrar com Token
+                                </button>
+                            </div>
+                            <div class="ui divider"></div>
+                            <a href="{% url 'hackers:facebook_login' %}"><button id="fb-login" type="button" class="fluid ui fb-login button">
+                                Entrar com Facebook
+                            </button></a>
+                            <div class="ui divider"></div>
+                            <a href="{% url 'hackers:github_login' %}"><button id="gh-login" type="button" class="fluid ui gh-login button">
+                                Entrar com GitHub
+                            </button></a>
+                        </form>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                <div id="forgot" class="forgot">
+
+                        <a id="forgot_query" onclick="forgot()" href="#">
+                            Esqueceu seu token?
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function forgot() {
+        $("#forgot").append(`
+            <form method="post" class="ui form" action="{% url 'hackers:recover_token' %}">
+            {% csrf_token %}
+            <div class="field">
+            <label>Recuperar Token</label>
+            <input type="email" name="email" id="email" placeholder="Seu email">
+            </div>
+            <button type="submit" class="fluid ui green button">
+            Recupere seu Token
+            </button>
+            </form>
+            `);
+        $("#forgot_query").remove();
+    }
+</script>
+{% endblock %}
