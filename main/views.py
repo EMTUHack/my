@@ -6,9 +6,6 @@ from .export import basic, advanced
 
 # Create your views here.
 
-# TODO: View para pegar csv básico de todo mundo para criar lista no mailchimp
-# TODO: View para pegar csv avançado de todo mundo para enviar pra microsoft
-
 
 def index(request):
     if request.user.is_authenticated:
