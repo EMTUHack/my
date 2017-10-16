@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from main.decorators import require_condition
+from .export import basic, advanced
 
 # Create your views here.
 
@@ -34,6 +35,16 @@ def admin(request):
 @user_passes_test(lambda u: u.is_superuser)
 def checkin(request):
     return render(request, 'main/checkin.html', {"sbar": "checkin"})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def export_basic_info(request):
+    return basic(request)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def export_advanced_info(request):
+    return advanced(request, [], ['enroll_year'])
 
 
 def handler404(request):

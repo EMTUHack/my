@@ -5,6 +5,8 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+
+from collections import OrderedDict
 # Create your models here.
 
 
@@ -193,6 +195,23 @@ class Hacker(models.Model):
         self.save()
         return self.token
 
+    def export_fields(self, exclude=[]):
+        fields = OrderedDict([
+            ('first_name', 'Primeiro Nome'),
+            ('last_name', 'Sobrenome'),
+            ('email', 'Email'),
+            ('checked_in', 'Atendeu'),
+            ('team', 'Nome da Equipe')
+        ])
+        res = OrderedDict()
+        for ex in exclude:
+            if fields.get(ex, False):
+                fields.pop(ex)
+
+        for k, v in fields.items():
+            res[v] = getattr(self, k)
+        return res
+
     @staticmethod
     def create(**kwargs):
         first_name = kwargs.pop("first_name")
@@ -257,6 +276,34 @@ class Application(models.Model):
                 res.append(text)
 
         return '<br>'.join(res)
+
+    def export_fields(self, exclude=[]):
+        fields = OrderedDict([
+            ('phone', 'Celular'),
+            ('age', 'Idade'),
+            ('university', 'Universidade'),
+            ('enroll_year', 'Ano de Ingresso'),
+            ('cv_type', 'Tipo do Currículo'),
+            ('cv', 'Currículo'),
+            ('cv2_type', 'Tipo do Currículo 2'),
+            ('cv2', 'Currículo 2'),
+            ('facebook', 'Facebook'),
+            ('description', 'Descrição'),
+        ])
+        # TODO: Make it so that GH e LI translate to LinkedIn and GitHub
+        res = OrderedDict()
+        for ex in exclude:
+            if fields.get(ex, False):
+                fields.pop(ex)
+
+        simple_cv = OrderedDict(list(CV_TYPES))
+
+        def simplify_cv(val):
+            return simple_cv.get(val, val)
+
+        for k, v in fields.items():
+            res[v] = getattr(self, k) if k not in ['cv_type', 'cv2_type'] else simplify_cv(getattr(self, k))
+        return res
 
     def __str__(self):
         return "{} {}".format(self.hacker.first_name, self.hacker.last_name)

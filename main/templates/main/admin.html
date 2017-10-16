@@ -60,6 +60,16 @@
 
                             <button class="ui fluid green button" type="button" onclick="import_hackers()"><i class="ui icon upload"></i> Submeter</button>
                         </div>
+                        <div class="ui divider"></div>
+                        <div class="ui form">
+                            <div class="title">
+                                Exportar hackers:
+                            </div>
+                            <br />
+                            <a href="{% url 'export_basic_info' %}" class="ui fluid blue button">Infos básicas</a>
+                            <br />
+                            <a href="{% url 'export_advanced_info' %}" class="ui fluid red button">Infos avançadas</a>
+                        </div>
                     </div>
                 </div>
             </div>
