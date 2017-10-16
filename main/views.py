@@ -6,6 +6,8 @@ from .export import basic, advanced
 
 # Create your views here.
 
+# TODO: Stats view for admins
+
 
 def index(request):
     if request.user.is_authenticated:
