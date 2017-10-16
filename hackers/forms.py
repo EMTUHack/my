@@ -24,8 +24,8 @@ class ApplicationForm(forms.ModelForm):
             'cv2_type': 'Outro tipo de Currículo',
             'cv2': 'Outro Currículo',
             'facebook': 'facebook.com/',
-            'sleeping_bag': '<a target="_blank" href="http://www.decathlon.com.br/camping/sacos-de-dormir-e-colchoes/saco-de-dormir-camping/saco-de-dormir-camping-arpenaz-25-quechua">Saco de Dormir (R$ 40)</a>',
-            'pillow': '<a target="_blank" href="">Travesseiro (R$ 20)</a>',
+            'sleeping_bag': '<div style="color: gray;" id="sleeping" ><i class="ui icon external share"></i>Saco de Dormir(R$ 40)</div>',
+            'pillow': '<div style="color: gray;" id="pillow"><i class="ui icon external share"></i>Travesseiro(R$ 35)</div>',
             'description': 'Eu me descreveria como...*',
             'essay': 'Por que você quer participar do Hack the Campus?',
         }

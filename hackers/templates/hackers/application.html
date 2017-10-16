@@ -119,7 +119,7 @@
                                 {{ form.essay }}
                             </div>
                             <br />
-                            <div class="divided title">Compras</div>
+                            <div id="pop_target" class="divided title">Compras</div>
                             <div class="subheader">Os itens abaixo são opcionais e não são gratuitos. Estão disponíveis a preço de custo e são comprados sob demanda. Clique em seus nomes para obter mais informações.<br>Você deve pagar por eles em dinheiro no ato de check-in.<br>Não será necessário devolver após o evento</div>
                             <br />
                             <div class="two fields">
@@ -150,4 +150,17 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $('#sleeping').popup({
+        position : 'bottom center',
+        on: 'click',
+        target   : '#pop_target',
+        html  : '<h4>Saco de Dormir (R$ 40)</h4><p>Saco de dormir para passar a noite no evento</p><p>Será semelhante a <a href="https://goo.gl/HeTv3G" target="_blank">esse</a></p><p>Valor final pode variar um pouco com disponibilidade e diferença será cobrada/devolvida</p>'});
+    $('#pillow').popup({
+        position : 'bottom center',
+        on: 'click',
+        target   : '#pop_target',
+        html  : '<h4>Travesseiro (R$ 35)</h4><p>Travesseiro para usar como travesseiro ou almofada</p><p>Será semelhante a <a href="https://goo.gl/P5wN7Q" target="_blank">esse</a></p><p>Valor final pode variar um pouco com disponibilidade e diferença será cobrada/devolvida</p>'});
+</script>
 {% endblock %}
