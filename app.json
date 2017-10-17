@@ -74,7 +74,23 @@
         "DEBUG": {
             "description": "Allow or disallow debug mode",
             "value": "true"
-        }
+        },
+        "MAILCHIMP_USER": {
+            "description": "MailChimp user for mailchimp integration",
+            "value": ""
+        },
+        "MAILCHIMP_SECRET": {
+            "description": "MailChimp secret for mailchimp integration",
+            "value": ""
+        },
+        "MAILCHIMP_LIST_PRE": {
+            "description": "MailChimp list id of the pre_confirmation user list",
+            "value": ""
+        },
+        "MAILCHIMP_LIST_CONFIRMED": {
+            "description": "MailChimp list id of the post_confirmation user list",
+            "value": ""
+        },
     },
     "keywords": ["python", "hackathon", "django"]
 }
