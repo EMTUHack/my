@@ -33,7 +33,7 @@ def notify_checkin(hacker):
     context = {
         'title': 'Check-in feito',
         'subtitle': 'Prepare-se!',
-        'description': 'Seu check-in no {} foi feito! Ficamos felizes que você pode vir e esperamos que você se divirta!<br>Seu próximo passo é acessar seu <b>>my<</b> novamente, criar sua equipe e ler as notícias. Para fazer isso, clique no botão abaixo!<br><b>Happy hacking!</b>'.format(settings.HACKATHON_NAME),
+        'description': 'Seu check-in no {} foi feito! Ficamos felizes que você pôde vir e esperamos que você se divirta!<br>Seu próximo passo é acessar seu <b>>my<</b> novamente, criar sua equipe e ler as notícias. Para fazer isso, clique no botão abaixo!<br><b>Happy hacking!</b>'.format(settings.HACKATHON_NAME),
         'actionUrl': settings.ROOT_URL + reverse('hackers:login_from_token', args={hacker.token}),
         'actionName': 'Acessar sua conta',
         'project_url': settings.ROOT_URL,
