@@ -41,7 +41,6 @@ def stats(request):
     data = {
         # Basic
         "hackers": len(Hacker.objects.all()),
-        "applications": len(Application.objects.all()),
         "teams": len(Team.objects.all()),
         # Hackers
         "checkin": len([h for h in Hacker.objects.all() if h.is_checkedin]),
