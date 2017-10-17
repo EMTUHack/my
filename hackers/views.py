@@ -296,3 +296,5 @@ def remove_github(request):
 def batch_confirm_hackers(request):
     hackers = [h for h in Hacker.objects.all() if h.is_confirmed]
     batch_confirm(hackers)
+    messages.add_message(request, messages.SUCCESS, '{} hackers migrados'.format(len(hackers)))
+    return redirect('dashboard')
