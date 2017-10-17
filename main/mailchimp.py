@@ -12,6 +12,8 @@ def md5(email):
 
 
 def add_subscriber(l, hacker):
+    if l is None:
+        return
     merge_fields = {
         'FNAME': hacker.first_name,
         'LNAME': hacker.last_name,
@@ -24,6 +26,8 @@ def add_subscriber(l, hacker):
 
 
 def remove_subscriber(l, hacker):
+    if l is None:
+        return
     hash_email = md5(hacker.email)
     try:
         client.lists.members.delete(list_id=l, subscriber_hash=hash_email)
