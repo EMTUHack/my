@@ -8,3 +8,4 @@ libsass
 django-compressor
 django-sass-processor
 requests
+mailchimp3

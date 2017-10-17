@@ -10,6 +10,7 @@ from .social import fb_methods, gh_methods
 from django.conf import settings
 from main.decorators import require_condition
 from main.email import recover_token_email, notify_checkin
+from main.mailchimp import add_subscriber, remove_subscriber, batch_confirm
 from .util import proc
 import json
 import io
@@ -47,7 +48,8 @@ def application(request):
         if form.is_valid():
             form.save(hacker=request.user.hacker)
             messages.add_message(request, messages.SUCCESS, 'Aplicação atualizada!')
-
+            remove_subscriber(settings.MAILCHIMP_LIST_PRE, request.user.hacker)
+            add_subscriber(settings.MAILCHIMP_LIST_CONFIRMED, request.user.hacker)
         else:
             messages.add_message(request, messages.ERROR, 'Aplicação contém erros!')
             return render(request, 'hackers/application.html', {'form': form, "sbar": "application"})
@@ -149,6 +151,7 @@ def import_hackers(request):
                 response_repeated.append({"name": "{} {}".format(hacker["first_name"], hacker["last_name"])})
             else:
                 h = Hacker.create(**hacker)
+                add_subscriber(settings.MAILCHIMP_LIST_PRE, h)
                 response_success.append({"name": h.name})
         except Exception as e:
             response_fail.append({"name": "{} {}".format(hacker["first_name"], hacker["last_name"]), "error": repr(e)})
@@ -209,6 +212,7 @@ def toggle_withdraw(request):
 def change_token(request):
     hacker = request.user.hacker
     hacker.new_token()
+    add_subscriber(settings.MAILCHIMP_LIST_CONFIRMED, hacker)
     messages.add_message(request, messages.SUCCESS, 'Token alterado!')
     return redirect('dashboard')
 
@@ -286,3 +290,9 @@ def remove_github(request):
     hacker.gh_social_id = None
     hacker.save()
     return redirect('dashboard')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def batch_confirm_hackers(request):
+    hackers = [h for h in Hacker.objects.all() if h.is_confirmed]
+    batch_confirm(hackers)

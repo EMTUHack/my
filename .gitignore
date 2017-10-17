@@ -1,6 +1,7 @@
 prev_app/
 *.log
 azure.csv
+surveys/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

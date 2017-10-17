@@ -188,3 +188,9 @@ CHAT = os.environ.get('CHAT')
 
 # Sponsor
 AZURE_PASSES = os.environ.get('AZURE_PASSES', None)
+
+# MailChimp
+MAILCHIMP_USER = os.environ.get('MAILCHIMP_USER', None)
+MAILCHIMP_SECRET = os.environ.get('MAILCHIMP_SECRET', None)
+MAILCHIMP_LIST_PRE = os.environ.get('MAILCHIMP_LIST_PRE', None)
+MAILCHIMP_LIST_CONFIRMED = os.environ.get('MAILCHIMP_LIST_CONFIRMED', None)
