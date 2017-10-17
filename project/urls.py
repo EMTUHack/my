@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.contrib.auth.views import logout
 
 from main import views
-from hackers import views as h_views
 
 handler404 = 'main.views.handler404'
 handler500 = 'main.views.handler500'
@@ -37,6 +36,4 @@ urlpatterns = [
     url(r'^godmode/export/basic$', views.export_basic_info, name='export_basic_info'),
     url(r'^godmode/export/advanced$', views.export_advanced_info, name='export_advanced_info'),
     url(r'^godmode/error$', views.test_error, name='test_error'),
-
-    url(r'^godmode/batch_confirm$', h_views.batch_confirm_hackers, name='batch_confirm'),
 ]
