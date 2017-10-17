@@ -3,10 +3,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from main.decorators import require_condition
 from .export import basic, advanced
-
+from hackers.models import Hacker, Application, Team
+from django.db.models import Q
+from collections import Counter
 # Create your views here.
-
-# TODO: Stats view for admins
 
 
 def index(request):
@@ -34,6 +34,43 @@ def admin(request):
 @user_passes_test(lambda u: u.is_superuser)
 def checkin(request):
     return render(request, 'main/checkin.html', {"sbar": "checkin"})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def stats(request):
+    data = {
+        # Basic
+        "hackers": len(Hacker.objects.all()),
+        "applications": len(Application.objects.all()),
+        "teams": len(Team.objects.all()),
+        # Hackers
+        "checkin": len([h for h in Hacker.objects.all() if h.is_checkedin]),
+        "confirmed": len([h for h in Hacker.objects.all() if h.is_confirmed]),
+        "incomplete": len([h for h in Hacker.objects.all() if h.is_incomplete]),
+        "withdraw": len([h for h in Hacker.objects.all() if h.is_withdraw]),
+        "late": len([h for h in Hacker.objects.all() if h.is_late]),
+        # Teams
+        "not_have_team": len(Hacker.objects.all()) - len([h for h in Hacker.objects.all() if h.has_team]),
+        "empty_team": len([t for t in Team.objects.all() if len(t.hackers.all()) == 0]),
+        "semi_team": len([t for t in Team.objects.all() if 2 >= len(t.hackers.all()) >= 1]),
+        "full_team": len([t for t in Team.objects.all() if len(t.hackers.all()) > 2]),
+        "complete_team": Team.objects.exclude(project__isnull=True).exclude(project__exact='').exclude(location__isnull=True).exclude(location__exact=''),
+        # Shirts
+        "m_p": len(Application.objects.filter(gender="M").filter(shirt_size="P")),
+        "m_m": len(Application.objects.filter(gender="M").filter(shirt_size="M")),
+        "m_g": len(Application.objects.filter(gender="M").filter(shirt_size="G")),
+        "m_gg": len(Application.objects.filter(gender="M").filter(shirt_size="GG")),
+        "f_p": len(Application.objects.filter(Q(gender="F") | Q(gender="O")).filter(shirt_size="P")),
+        "f_m": len(Application.objects.filter(Q(gender="F") | Q(gender="O")).filter(shirt_size="M")),
+        "f_g": len(Application.objects.filter(Q(gender="F") | Q(gender="O")).filter(shirt_size="G")),
+        "f_gg": len(Application.objects.filter(Q(gender="F") | Q(gender="O")).filter(shirt_size="GG")),
+        # Extras
+        "sleep": len(Application.objects.filter(sleeping_bag=True)),
+        "pill": len(Application.objects.filter(pillow=True)),
+        "diet": Counter([d.diet for d in Application.objects.exclude(diet__isnull=True).exclude(diet__exact='')]).most_common(),
+        "needs": Counter([d.special_needs for d in Application.objects.exclude(special_needs__isnull=True).exclude(special_needs__exact='')]).most_common(),
+    }
+    return render(request, 'main/stats.html', {"sbar": "stats", "data": data})
 
 
 @user_passes_test(lambda u: u.is_superuser)

@@ -36,6 +36,9 @@
             <div class="item {% if sbar == 'admin' %}active{% endif %}">
                 <a href="{% url 'admin' %}" class="fill-div">Admin</a>
             </div>
+            <div class="item {% if sbar == 'stats' %}active{% endif %}">
+                <a href="{% url 'stats' %}" class="fill-div">Stats</a>
+            </div>
             <div class="item {% if sbar == 'checkin' %}active{% endif %}">
                 <a href="{% url 'checkin' %}" class="fill-div">Check In</a>
             </div>

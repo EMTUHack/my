@@ -1,0 +1,259 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block sidebar %}
+{% include 'main/sidebar.html' %}
+{% endblock %}
+{% block extend_scripts %}
+<script src="{% static 'main/js/sidebar.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="container">
+        <div id="dashboard" class="page">
+            <div class="divided title">
+                Stats
+            </div>
+            <div class="ui stackable centered page grid">
+                <div class="column segment">
+                    <div class="small header divided title">
+                        Básico
+                    </div>
+                    <div class="ui three statistics">
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.hackers }}
+                            </div>
+                            <div class="label">
+                                Hackers
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.applications }}
+                            </div>
+                            <div class="label">
+                                Aplicações
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.teams }}
+                            </div>
+                            <div class="label">
+                                Equipes
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <br>
+                    <div class="small header divided title">
+                        Hackers
+                    </div>
+                    <div class="ui five statistics">
+                        <div class="green statistic">
+                            <div class="value">
+                                {{ data.checkin }}
+                            </div>
+                            <div class="label">
+                                Checked In
+                            </div>
+                        </div>
+                        <div class="statistic blue">
+                            <div class="value">
+                                {{ data.confirmed }}
+                            </div>
+                            <div class="label">
+                                Confirmados
+                            </div>
+                        </div>
+                        <div class="statistic yellow">
+                            <div class="value">
+                                {{ data.incomplete }}
+                            </div>
+                            <div class="label">
+                                Incompletos
+                            </div>
+                        </div>
+                        <div class="statistic orange">
+                            <div class="value">
+                                {{ data.withdraw }}
+                            </div>
+                            <div class="label">
+                                Desistentes
+                            </div>
+                        </div>
+                        <div class="statistic red">
+                            <div class="value">
+                                {{ data.late }}
+                            </div>
+                            <div class="label">
+                                Atrasados
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <br>
+                    <div class="small header divided title">
+                        Equipes
+                    </div>
+                    <div class="ui five statistics">
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.not_have_team }}
+                            </div>
+                            <div class="label">
+                                [H] sem Equipe
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.empty_team }}
+                            </div>
+                            <div class="label">
+                                Equipes Vazias
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.semi_team }}
+                            </div>
+                            <div class="label">
+                                Equipes com 1 - 2
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.full_team }}
+                            </div>
+                            <div class="label">
+                                Equipes com 3 - 4
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.complete_team|length }}
+                            </div>
+                            <div class="label">
+                                Equipes Completas
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <br>
+                    <div class="small header divided title">
+                        Camisas
+                    </div>
+                    <div class="ui four statistics">
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.m_p }}
+                            </div>
+                            <div class="label">
+                                [M] P
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.m_m }}
+                            </div>
+                            <div class="label">
+                                [M] M
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.m_g }}
+                            </div>
+                            <div class="label">
+                                [M] G
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.m_gg }}
+                            </div>
+                            <div class="label">
+                                [M] GG
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.f_p }}
+                            </div>
+                            <div class="label">
+                                [F] P
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.f_m }}
+                            </div>
+                            <div class="label">
+                                [F] M
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.f_g }}
+                            </div>
+                            <div class="label">
+                                [F] G
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.f_gg }}
+                            </div>
+                            <div class="label">
+                                [F] GG
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <br>
+                    <div class="small header divided title">
+                        Extras
+                    </div>
+                    <div class="ui two statistics">
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.sleep }}
+                            </div>
+                            <div class="label">
+                                Sacos de Dormir
+                            </div>
+                        </div>
+                        <div class="statistic">
+                            <div class="value">
+                                {{ data.pill }}
+                            </div>
+                            <div class="label">
+                                Travesseiros
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <br>
+                    <div class="small header divided title">
+                        Infraestrutura
+                    </div>
+                    <div style="text-align: center;" class="center aligned">
+                        {% for k in data.diet %}
+                        <div class="ui blue label">
+                            {{ k.0 }}
+                            <div class="detail">{{ k.1 }}</div>
+                        </div>
+                        {% endfor %}
+                        {% for k in data.needs %}
+                        <div class="ui red label">
+                            {{ k.0 }}
+                            <div class="detail">{{ k.1 }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

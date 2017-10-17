@@ -16,10 +16,10 @@ GENDER_TYPES = (
     ('O', 'Outro')
 )
 SHIRT_SIZES = (
-    ('PP', 'PP'),
     ('P', 'P'),
     ('M', 'M'),
     ('G', 'G'),
+    ('GG', 'GG'),
 )
 CV_TYPES = (
     ('LI', 'LinkedIn'),

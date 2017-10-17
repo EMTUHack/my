@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^dashboard$', views.dashboard, name='dashboard'),
     url(r'^team$', views.team, name='team'),
     url(r'^godmode/$', views.admin, name='admin'),
+    url(r'^godmode/stats$', views.stats, name='stats'),
     url(r'^godmode/checkin$', views.checkin, name='checkin'),
     url(r'^godmode/export/basic$', views.export_basic_info, name='export_basic_info'),
     url(r'^godmode/export/advanced$', views.export_advanced_info, name='export_advanced_info'),
