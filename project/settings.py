@@ -185,3 +185,6 @@ ROOT_URL = os.environ.get('ROOT_URL')
 HACKATHON_NAME = os.environ.get('HACKATHON_NAME')
 HELPER = os.environ.get('HELPER')
 CHAT = os.environ.get('CHAT')
+
+# Sponsor
+AZURE_PASSES = os.environ.get('AZURE_PASSES', None)

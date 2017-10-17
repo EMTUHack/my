@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-
+import requests
 from collections import OrderedDict
 # Create your models here.
 
@@ -84,8 +84,11 @@ class Hacker(models.Model):
     withdraw = models.BooleanField(default=False)
 
     # Social Login
-    fb_social_id = models.CharField(max_length=50, null=True, unique=True)
-    gh_social_id = models.CharField(max_length=50, null=True, unique=True)
+    fb_social_id = models.CharField(max_length=50, null=True, blank=True, unique=True)
+    gh_social_id = models.CharField(max_length=50, null=True, blank=True, unique=True)
+
+    # Sponsor
+    azure_pass = models.CharField(max_length=100, null=True, blank=True, unique=True)
 
     @property
     def has_fb_login(self):
@@ -194,6 +197,23 @@ class Hacker(models.Model):
         self.token = token
         self.save()
         return self.token
+
+    def get_azure_pass(self, i=0, passes=[]):
+        if passes == []:
+            if settings.AZURE_PASSES is None:
+                return
+            file = requests.get(settings.AZURE_PASSES).text
+            passes = eval('["' + file.replace('\r\n', '", "') + '"]')
+
+        if i >= len(passes):
+            return
+
+        azure = passes[i]
+        if Hacker.objects.filter(azure_pass=azure).first() is not None:
+            return self.get_azure_pass(i + 1, passes)
+        self.azure_pass = azure
+        self.save()
+        return self.azure_pass
 
     def export_fields(self, exclude=[]):
         fields = OrderedDict([

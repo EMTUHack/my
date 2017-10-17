@@ -177,6 +177,7 @@ def check_in_hacker(request):
         return HttpResponseForbidden()
     hacker.checked_in = not hacker.checked_in
     hacker.save()
+    hacker.get_azure_pass()
     return HttpResponse(json.dumps({"res": hacker.checked_in, "id": hacker.id}), content_type="application/json")
 
 
