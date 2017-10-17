@@ -4,6 +4,8 @@ import hashlib
 from requests.exceptions import HTTPError
 
 
+if settings.MAILCHIMP_USER is None:
+    client = None
 client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_SECRET)
 
 
