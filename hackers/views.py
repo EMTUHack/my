@@ -290,3 +290,11 @@ def remove_github(request):
     hacker.gh_social_id = None
     hacker.save()
     return redirect('dashboard')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def batch_confirm_hackers(request):
+    hackers = [h for h in Hacker.objects.all() if h.is_confirmed]
+    batch_confirm(hackers)
+    messages.add_message(request, messages.SUCCESS, '{} hackers migrados'.format(len(hackers)))
+    return redirect('dashboard')
