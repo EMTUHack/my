@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html ng-app="reg">
-  <head lang="pt-br">
+<head lang="pt-br">
     <base href="/">
     {% load staticfiles %}
     {% load sass_tags %}
@@ -41,17 +41,27 @@
     <!-- Page style -->
     {% block extend_style %}{% endblock %}
 
-      <!-- iOS Web Clip -->
+    <!-- iOS Web Clip -->
     <link rel="apple-touch-icon" href="{% static 'main/img/favicon.png' %}">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
     <link rel="icon" href="{% static 'main/img/favicon.png' %}">
 
-  </head>
-  <body>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107560650-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-107560650-2');
+    </script>
+
+</head>
+<body>
     <div class="container ng-scope" id="root-view" ui-view=""><div id="base" class="ng-scope">
         {% block sidebar %}{% endblock %}
         {% block content %}{% endblock %}
     </div>
-  </body>
+</body>
 </html>
