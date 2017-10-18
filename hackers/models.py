@@ -10,6 +10,14 @@ from collections import OrderedDict
 # Create your models here.
 
 
+@property
+def is_hacker(self):
+    return hasattr(self, 'hacker')
+
+
+User.add_to_class('is_hacker', is_hacker)
+
+
 GENDER_TYPES = (
     ('M', 'Masculino'),
     ('F', 'Feminino'),
