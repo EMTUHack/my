@@ -20,7 +20,7 @@ class ApplicationForm(forms.ModelForm):
             'special_needs': 'Necessidades especiais',
             'shirt_size': 'Tamanho da Camisa*',
             'cv_type': 'Tipo de Currículo*',
-            'cv': 'Currículo*',
+            'cv': 'Currículo (Válido)* <a id="why">Por quê?</a>',
             'cv2_type': 'Outro tipo de Currículo',
             'cv2': 'Outro Currículo',
             'facebook': 'facebook.com/',

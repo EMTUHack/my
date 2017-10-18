@@ -89,7 +89,7 @@
                                     {{ form.cv_type }}
                                 </div>
                                 <div class="field {% if form.cv.errors.as_text %}error{% endif %}">
-                                    <label>{{ form.cv.label}}</label>
+                                    <label>{{ form.cv.label | safe}}</label>
                                     <span style="color: red" class="small">{{ form.cv.errors.as_text }}</span>
                                     {{ form.cv }}
                                 </div>
@@ -162,5 +162,12 @@
         on: 'click',
         target   : '#pop_target',
         html  : '<h4>Travesseiro (R$ 35)</h4><p>Travesseiro para usar como travesseiro ou almofada</p><p>Será semelhante a <a href="https://goo.gl/P5wN7Q" target="_blank">esse</a></p><p>Valor final pode variar um pouco com disponibilidade e diferença será cobrada/devolvida</p>'});
+
+    $('#why').popup({
+        position : 'bottom center',
+        on: 'click',
+        title   : 'Por que currículos?',
+        content : 'Precisamos de seu currículo válido pois essa é a forma como \'pagamos\' a Microsoft. Eles querem recrutar vocês e estão dispostos a cobrir todos os nossos custos por isso. Portanto, exigimos que todos os participantes nos dêem seus currículos válidos.'
+    });
 </script>
 {% endblock %}
