@@ -35,6 +35,8 @@ urlpatterns = [
     url(r'^godmode/stats$', views.stats, name='stats'),
     url(r'^godmode/checkin$', views.checkin, name='checkin'),
     url(r'^godmode/export/basic$', views.export_basic_info, name='export_basic_info'),
+    url(r'^godmode/export/basic_confirmed$', views.export_basic_info_confirmed, name='export_basic_info_confirmed'),
+    url(r'^godmode/export/basic_unconfirmed$', views.export_basic_info_unconfirmed, name='export_basic_info_unconfirmed'),
     url(r'^godmode/export/advanced$', views.export_advanced_info, name='export_advanced_info'),
     url(r'^godmode/error$', views.test_error, name='test_error'),
 

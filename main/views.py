@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
 from main.decorators import require_condition
-from .export import basic, advanced
+from .export import basic, basic_confirmed, basic_unconfirmed, advanced
 from hackers.models import Hacker, Application, Team
 from django.db.models import Q
 from collections import Counter
@@ -75,6 +75,16 @@ def stats(request):
 @user_passes_test(lambda u: u.is_superuser)
 def export_basic_info(request):
     return basic(request)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def export_basic_info_confirmed(request):
+    return basic_confirmed(request)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def export_basic_info_unconfirmed(request):
+    return basic_unconfirmed(request)
 
 
 @user_passes_test(lambda u: u.is_superuser)
