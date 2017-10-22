@@ -1,10 +1,10 @@
 var inputBox;
 
 function first_run() {
-	list = ["RG", "ID da Universidade", "Notebook", "Carregadores", "Caderno e Caneta", "Travesseiro", "Saco de Dormir", "Escova/Pasta de Dente"]
-	for (item in list)
+	l = ["RG", "ID da Universidade", "Notebook", "Carregadores", "Caderno e Caneta", "Travesseiro", "Saco de Dormir", "Escova/Pasta de Dente"]
+	for (item in l)
 	{
-		inputBox.val(list[item]);
+		inputBox.val(l[item]);
 		add();
 	}
 	console.log('List first run');
@@ -35,11 +35,16 @@ function saveList() {
 
 function loadList() {
 
+	if (typeof Cookies.get('list') === 'undefined') {
+	 	console.log("No list defined. Running default");
+	 	first_run();
+	}
+
 	var items = Cookies.get('list');
 
 	if(items === undefined)
 	{
-		// first_run();
+		first_run();
 		return;
 	}
 	if (items == '')
@@ -124,10 +129,13 @@ $(document).ready(function() {
 	inputBox.keypress(onKeyPress);
 	$('#list').on('click', '.to-do', remove);
 
-	if (Cookies.get('list') === undefined)
-		first_run();
-	else
-		loadList();
+	if (typeof Cookies.get('list') === 'undefined') {
+	 	console.log("No list defined");
+	 	first_run();
+	} else {
+	 	loadList();
+	}
+
 	$('#script-error').remove();
 
 });
