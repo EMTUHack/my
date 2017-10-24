@@ -77,7 +77,7 @@ def advanced(request, exclude_hacker=[], exclude_application=[]):
     fields.extend([k for k, v in Application.objects.first().export_fields(exclude_application).items()])
     writer.writerow(fields)
     for hacker in Hacker.objects.all():
-        if hacker.finished_application or True:
+        if hacker.finished_application:
             row = [v for k, v in hacker.export_fields(exclude_hacker).items()]
             row.extend([v for k, v in hacker.application.export_fields(exclude_application).items()])
             writer.writerow(row)
