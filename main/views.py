@@ -73,8 +73,8 @@ def stats(request):
         # Extras
         "sleep": len(Application.objects.filter(sleeping_bag=True)),
         "pill": len(Application.objects.filter(pillow=True)),
-        "diet": Counter([d.diet for d in Application.objects.exclude(diet__isnull=True).exclude(diet__exact='')]).most_common(),
-        "needs": Counter([d.special_needs for d in Application.objects.exclude(special_needs__isnull=True).exclude(special_needs__exact='')]).most_common(),
+        "diet": Counter([d.diet.lower() for d in Application.objects.exclude(diet__isnull=True).exclude(diet__exact='')]).most_common(),
+        "needs": Counter([d.special_needs.lower() for d in Application.objects.exclude(special_needs__isnull=True).exclude(special_needs__exact='')]).most_common(),
         "motivations_1": Counter(motivations_1).most_common(10),
         "motivations_2": Counter(motivations_2).most_common(10),
         "descriptions_1": Counter(descriptions_1).most_common(10),
