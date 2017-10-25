@@ -6,6 +6,7 @@ from .export import basic, basic_confirmed, basic_unconfirmed, advanced
 from hackers.models import Hacker, Application, Team
 from django.db.models import Q
 from collections import Counter
+from .stats import get_grams
 # Create your views here.
 
 
@@ -38,6 +39,12 @@ def checkin(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def stats(request):
+    motivations = [a.essay for a in Application.objects.exclude(essay='').exclude(essay=None)]
+    motivations_1 = get_grams(motivations)
+    motivations_2 = get_grams(motivations, 2)
+    descriptions = [a.description for a in Application.objects.exclude(description='').exclude(description=None)]
+    descriptions_1 = get_grams(descriptions)
+    descriptions_2 = get_grams(descriptions, 2)
     data = {
         # Basic
         "hackers": len(Hacker.objects.all()),
@@ -68,6 +75,10 @@ def stats(request):
         "pill": len(Application.objects.filter(pillow=True)),
         "diet": Counter([d.diet for d in Application.objects.exclude(diet__isnull=True).exclude(diet__exact='')]).most_common(),
         "needs": Counter([d.special_needs for d in Application.objects.exclude(special_needs__isnull=True).exclude(special_needs__exact='')]).most_common(),
+        "motivations_1": Counter(motivations_1).most_common(10),
+        "motivations_2": Counter(motivations_2).most_common(10),
+        "descriptions_1": Counter(descriptions_1).most_common(10),
+        "descriptions_2": Counter(descriptions_2).most_common(10),
     }
     return render(request, 'main/stats.html', {"sbar": "stats", "data": data})
 

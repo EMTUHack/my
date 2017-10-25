@@ -6,6 +6,13 @@
 {% block extend_scripts %}
 <script src="{% static 'main/js/sidebar.js' %}"></script>
 {% endblock %}
+{% block extend_style %}
+<style type="text/css">
+    .ui.label {
+        margin-bottom: 10px !important;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="content">
     <div class="container">
@@ -233,7 +240,48 @@
                             <div class="detail">{{ k.1 }}</div>
                         </div>
                         {% endfor %}
+                        <br>
                         {% for k in data.needs %}
+                        <div class="ui red label">
+                            {{ k.0 }}
+                            <div class="detail">{{ k.1 }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="ui divider"></div>
+                    <br>
+                    <div class="small header divided title">
+                        Motivações
+                    </div>
+                    <div style="text-align: center;" class="center aligned">
+                        {% for k in data.motivations_1 %}
+                        <div class="ui blue label">
+                            {{ k.0 }}
+                            <div class="detail">{{ k.1 }}</div>
+                        </div>
+                        {% endfor %}
+                        <br>
+                        {% for k in data.motivations_2 %}
+                        <div class="ui red label">
+                            {{ k.0 }}
+                            <div class="detail">{{ k.1 }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="ui divider"></div>
+                    <br>
+                    <div class="small header divided title">
+                        Descrições
+                    </div>
+                    <div style="text-align: center;" class="center aligned">
+                        {% for k in data.descriptions_1 %}
+                        <div class="ui blue label">
+                            {{ k.0 }}
+                            <div class="detail">{{ k.1 }}</div>
+                        </div>
+                        {% endfor %}
+                        <br>
+                        {% for k in data.descriptions_2 %}
                         <div class="ui red label">
                             {{ k.0 }}
                             <div class="detail">{{ k.1 }}</div>
