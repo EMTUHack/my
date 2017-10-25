@@ -120,7 +120,7 @@ function update_github_url() {
         url: update_github_url_url,
         type: 'post',
         data: {
-            location: text,
+            github_url: text,
             csrfmiddlewaretoken: csrf
         },
         success: function(data) {
