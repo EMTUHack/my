@@ -100,7 +100,7 @@ def export_basic_info_unconfirmed(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def export_advanced_info(request):
-    return advanced(request, [], ['enroll_year'])
+    return advanced(request, [], [])
 
 
 def handler404(request):
