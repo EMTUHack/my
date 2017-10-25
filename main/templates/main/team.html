@@ -164,6 +164,13 @@
             <br />
             <input maxlength="20" onkeyup="on_location_up()" type="text" id="location" placeholder="Mesa 21...">
         </div>
+        <div class="field">
+            <div class="title">
+                URL do seu projeto no Github
+            </div>
+            <br />
+            <input maxlength="20" onkeyup="on_github_url_up()" type="text" id="github_url" placeholder="github.com/super_t3am/superpr0j3ct">
+        </div>
         <div class="title">
             Bloquear novos membros?
         </div>
@@ -191,5 +198,6 @@
     var allow_team_url = "{% url 'hackers:api_update_allow_new' %}";
     var update_project_url = "{% url 'hackers:api_update_project' %}";
     var update_location_url = "{% url 'hackers:api_update_location' %}";
+    var update_github_url_url = "{% url 'hackers:api_update_github_url' %}";
 </script>
 {% endblock %}

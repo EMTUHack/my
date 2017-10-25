@@ -113,6 +113,28 @@ function update_location() {
     })
 }
 
+function update_github_url() {
+    var text = $("#github_url").val();
+    $.ajax(
+    {
+        url: update_github_url_url,
+        type: 'post',
+        data: {
+            location: text,
+            csrfmiddlewaretoken: csrf
+        },
+        success: function(data) {
+        },
+        error: function(data) {
+            if (data['status'] == 403)
+            {
+                $("#team_error").text("Fim do prazo de alteração das equipes!");
+                $("#team_error").show();
+            }
+        }
+    })
+}
+
 jQuery.fn.swapWith = function(to) {
     return this.each(function() {
         var copy_to = $(to).clone(true);
@@ -151,4 +173,8 @@ function on_project_up() {
 function on_location_up() {
     clearTimeout(typingTimer);
     typingTimer = setTimeout(update_location, doneTypingInterval);
+}
+function on_github_url_up() {
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(update_github_url, doneTypingInterval);
 }

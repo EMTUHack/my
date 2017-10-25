@@ -123,6 +123,22 @@ def update_location(request):
 
 @require_condition(settings.HACKATHON_STARTED and not settings.HACKATHON_ENDED)
 @user_passes_test(lambda u: u.hacker.is_checkedin)
+def update_github_url(request):
+    """Update Projeto URL API
+    returns forbidden if hacker has no team
+    """
+    github_url = request.POST['github_url']
+    hacker = request.user.hacker
+    if not hacker.has_team:
+        return HttpResponseForbidden()
+    team = hacker.team
+    team.github_url = github_url
+    team.save()
+    return HttpResponse(json.dumps({"github_url": hacker.team.github_url}), content_type="application/json")
+
+
+@require_condition(settings.HACKATHON_STARTED and not settings.HACKATHON_ENDED)
+@user_passes_test(lambda u: u.hacker.is_checkedin)
 def update_allow_new_members(request):
     """Update Location API
     returns forbidden if hacker has no team
