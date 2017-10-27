@@ -91,6 +91,7 @@ class Hacker(models.Model):
     active = models.BooleanField(default=False)
     checked_in = models.BooleanField(default=False)
     withdraw = models.BooleanField(default=False)
+    second_chance = models.BooleanField(default=False)
 
     # Social Login
     fb_social_id = models.CharField(max_length=50, null=True, blank=True, unique=True)
@@ -128,7 +129,7 @@ class Hacker(models.Model):
         # Check if the hacker hasnt completed their application
         if not self.finished_application:
             # If the application period has ended, thet cant complete their registration
-            if not settings.APPLICATION_OPEN:
+            if not settings.APPLICATION_OPEN and not self.second_chance:
                 return 4
             # Incompleted hackers can still complete their registration
             return 2

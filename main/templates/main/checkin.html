@@ -40,6 +40,25 @@
                                 <table id="example" class="display" width="100%"></table>
                             </div>
                         </div>
+                        {% if user.is_superuser %}
+                        <div class="ui divider"></div>
+                        <div id="late_anchor">
+                            <div class="ui form">
+                                <div class="form">
+                                    <div class="title">
+                                        Pesquise hackers atrasados:
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="field">
+                                    <input maxlength="20" id="search_late_hackers" class="ui input" type="text" placeholder="Digite o nome, email ou token do hacker...">
+                                </div>
+                                <div class="ui divider"></div>
+                                <button class="ui fluid blue button" type="button" onclick="search_late_hackers()"><i class="ui icon search"></i> Pesquisar</button>
+                                <table id="example_late" class="display" width="100%"></table>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -54,9 +73,19 @@
     var get_hacker_check_in_url = "{% url 'hackers:get_hacker_check_in' %}";
     var notify_check_in_hacker_url = "{% url 'hackers:notify_check_in_hacker' %}";
 
+    var search_late_hackers_url = "{% url 'hackers:search_late_hackers' %}";
+    var give_second_chance_url = "{% url 'hackers:give_second_chance' %}";
+    var get_hacker_second_chance_url = "{% url 'hackers:get_hacker_second_chance' %}";
+    var notify_late_hacker_url = "{% url 'hackers:notify_late_hacker' %}";
+
     $("#search_hackers").on('keyup', function (e) {
         if (e.keyCode == 13) {
             search_hackers();
+        }
+    });
+    $("#search_late_hackers").on('keyup', function (e) {
+        if (e.keyCode == 13) {
+            search_late_hackers();
         }
     });
 </script>

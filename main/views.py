@@ -33,7 +33,7 @@ def login_from_token(request, token="42"):
 
     if hacker_or_staff.user.is_hacker:
         # Do not allow non active hackers
-        if settings.HACKATHON_STARTED and not hacker_or_staff.active:
+        if (settings.HACKATHON_STARTED and not hacker_or_staff.active) and not hacker_or_staff.second_chance:
             return HttpResponseForbidden()
 
         # Activate hackers on login

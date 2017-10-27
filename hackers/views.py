@@ -7,7 +7,7 @@ from .models import Hacker
 from .forms import ApplicationForm
 from django.conf import settings
 from main.decorators import require_condition
-from main.email import notify_checkin
+from main.email import notify_checkin, notify_late
 from main.mailchimp import add_subscriber, remove_subscriber, batch_confirm
 from .util import proc
 import json
@@ -15,7 +15,7 @@ import io
 # Create your views here.
 
 
-@require_condition(settings.APPLICATION_OPEN)
+@user_passes_test(lambda u: u.hacker.second_chance or settings.APPLICATION_OPEN)
 @login_required
 def application(request):
     app_instance = getattr(request.user.hacker, 'application', None)
@@ -163,6 +163,17 @@ def search_hacker(request):
     ] for hacker in hackers]), content_type="application/json")
 
 
+@user_passes_test(lambda u: u.is_superuser)
+def search_late_hacker(request):
+    data = request.POST['data']
+    hackers = Hacker.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data) | Q(token__icontains=data)).filter(application__completed=False)[0:10]
+    return HttpResponse(json.dumps([[
+        hacker.name,
+        hacker.email,
+        '<button class="ui small blue button" type="button" onclick="sweet_late(\'' + hacker.name + '\', ' + str(hacker.id) + ')">Liberar</button>'
+    ] for hacker in hackers]), content_type="application/json")
+
+
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def check_in_hacker(request):
     hacker_id = request.POST['id']
@@ -171,9 +182,19 @@ def check_in_hacker(request):
     if not (hacker.is_confirmed or hacker.is_checkedin):
         return HttpResponseForbidden()
     hacker.checked_in = not hacker.checked_in
+    hacker.second_chance = False
     hacker.save()
     hacker.get_azure_pass()
     return HttpResponse(json.dumps({"res": hacker.checked_in, "id": hacker.id}), content_type="application/json")
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def give_second_chance(request):
+    hacker_id = request.POST['id']
+    hacker = get_object_or_404(Hacker, id=hacker_id)
+    hacker.second_chance = not hacker.second_chance
+    hacker.save()
+    return HttpResponse(json.dumps({"res": hacker.second_chance, "id": hacker.id}), content_type="application/json")
 
 
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
@@ -184,11 +205,25 @@ def notify_check_in_hacker(request):
     return HttpResponse()
 
 
+@user_passes_test(lambda u: u.is_superuser)
+def notify_late_hacker(request):
+    hacker = get_object_or_404(Hacker, id=request.POST['id'])
+    notify_late(hacker)
+    return HttpResponse()
+
+
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def get_hacker_check_in(request):
     hacker_id = request.POST['id']
     hacker = get_object_or_404(Hacker, id=hacker_id)
     return HttpResponse(json.dumps({"data": hacker.checked_in}), content_type="application/json")
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def get_hacker_second_chance(request):
+    hacker_id = request.POST['id']
+    hacker = get_object_or_404(Hacker, id=hacker_id)
+    return HttpResponse(json.dumps({"data": hacker.second_chance}), content_type="application/json")
 
 
 @require_condition(settings.APPLICATION_OPEN)
