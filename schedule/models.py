@@ -24,7 +24,7 @@ class Event(models.Model):
 
     # Basic
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=100)
+    description = models.CharField(max_length=300)
     starts = models.DateTimeField()
     ends = models.DateTimeField()
     kind = models.CharField(max_length=30, choices=EVENT_TYPES)
