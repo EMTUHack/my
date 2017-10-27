@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'hackers',
     'main',
+    'staff',
     'sass_processor',
 ]
 

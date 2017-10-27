@@ -200,8 +200,9 @@ class Hacker(models.Model):
         team.hackers.remove(self)
 
     def new_token(self):
+        from staff.models import Staff
         token = get_random_string(length=TOKEN_SIZE)
-        if Hacker.objects.filter(token=token).first() is not None:
+        if Hacker.objects.filter(token=token).first() is not None or Staff.objects.filter(token=token).first() is not None:
             return self.new_token()
         self.token = token
         self.save()

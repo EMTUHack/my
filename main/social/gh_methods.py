@@ -3,6 +3,7 @@ from django.conf import settings
 from urllib.parse import urlencode
 from django.shortcuts import reverse
 from hackers.models import Hacker
+from staff.models import Staff
 from django.contrib import messages
 from django.contrib.auth import login
 
@@ -13,9 +14,9 @@ state = 'random_string_not_needed_for_this_simple_app'
 
 def redirect_url(request):
     if request.is_secure():
-        return 'https://' + request.get_host() + reverse('hackers:github_login_response')
+        return 'https://' + request.get_host() + reverse('main:github_login_response')
     else:
-        return 'http://' + request.get_host() + reverse('hackers:github_login_response')
+        return 'http://' + request.get_host() + reverse('main:github_login_response')
 
 
 def auth_url(request):
@@ -81,18 +82,18 @@ def login_successful(code, request):
 
     # Save new hacker information
     if request.user.is_authenticated:
-        hacker = request.user.hacker
-        hacker.gh_social_id = social_id
-        hacker.save()
+        obj = request.user.hacker_or_staff
+        obj.gh_social_id = social_id
+        obj.save()
     else:
-        hacker = Hacker.objects.filter(gh_social_id=social_id).first()
+        obj = Hacker.objects.filter(gh_social_id=social_id).first() or Staff.objects.filter(gh_social_id=social_id).first()
 
     # Try to login the user
-    if hacker is None:
+    if obj is None:
         messages.add_message(request, messages.ERROR, 'Você precisa estar inscrito(a) para entrar!')
     else:
-        login(request, hacker.user)
-        messages.add_message(request, messages.SUCCESS, 'Olá, ' + hacker.first_name + '!')
+        login(request, obj.user)
+        messages.add_message(request, messages.SUCCESS, 'Olá, ' + obj.first_name + '!')
 
     return request
 

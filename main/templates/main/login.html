@@ -31,11 +31,11 @@
                                 </button>
                             </div>
                             <div class="ui divider"></div>
-                            <a href="{% url 'hackers:facebook_login' %}"><button id="fb-login" type="button" class="fluid ui fb-login button">
+                            <a href="{% url 'main:facebook_login' %}"><button id="fb-login" type="button" class="fluid ui fb-login button">
                                 Entrar com Facebook
                             </button></a>
                             <div class="ui divider"></div>
-                            <a href="{% url 'hackers:github_login' %}"><button id="gh-login" type="button" class="fluid ui gh-login button">
+                            <a href="{% url 'main:github_login' %}"><button id="gh-login" type="button" class="fluid ui gh-login button">
                                 Entrar com GitHub
                             </button></a>
                         </form>
@@ -56,7 +56,7 @@
 <script type="text/javascript">
     function forgot() {
         $("#forgot").append(`
-            <form method="post" class="ui form" action="{% url 'hackers:recover_token' %}">
+            <form method="post" class="ui form" action="{% url 'main:recover_token' %}">
             {% csrf_token %}
             <div class="field">
             <label>Recuperar Token</label>

@@ -25,21 +25,22 @@
                         </div>
                         {% endfor %}
                         {% endif %}
+                        {% if user.is_hacker %}
                         <div class="small title">
                             Seu Status:
                         </div>
                         <br>
-
                         <div class="state {{ user.hacker.state.0 }}">
                             {{ user.hacker.state.1 }}
                         </div>
 
                         <div class="ui divider"></div>
+                        {% endif %}
 
                         <div ng-if="user.profile.name.length > 0">
                             <p>
                                 <strong>
-                                    Olá novamente, {{ user.hacker.first_name }}!
+                                    Olá novamente, {% if user.is_hacker %}{{ user.hacker.first_name }}{% else %}{{ user.staff.first_name }}{% endif %}!
                                 </strong>
                             </p>
                         </div>
@@ -107,6 +108,15 @@
                                 Mudei de ideia!
                             </a>
                         </div>
+                        {% endif %}
+                        {% if user.is_staff_member %}
+                        <div class="description">
+                            <p>
+                                Que bom que pôde vir :)
+                            </p>
+                        </div>
+                        {% include 'main/dash_sections/staff_info.html' %}
+                        {% include 'main/dash_sections/access.html' %}
                         {% endif %}
                     </div>
                 </div>

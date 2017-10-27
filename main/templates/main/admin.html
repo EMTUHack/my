@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="field">
                                     <br />
-                                    <textarea id="batch_hackers" placeholder="Cole o conteúdo do CSV aqui" rows="5">{{ user.hacker.team.project }}</textarea>
+                                    <textarea id="batch_hackers" placeholder="Cole o conteúdo do CSV aqui" rows="5"></textarea>
                                 </div>
                                 <div style="display: none;" id="batch_anchor" class="ui accordion">
                                     <div class="title">
@@ -62,8 +62,48 @@
                         </div>
                         <div class="ui divider"></div>
                         <div class="ui form">
+                                <div class="form">
+                                    <div class="title">
+                                        Importar Staff:
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <br />
+                                    <textarea id="batch_staff" placeholder="Cole o conteúdo do CSV aqui" rows="5"></textarea>
+                                </div>
+                                <div style="display: none;" id="batch_anchor_staff" class="ui accordion">
+                                    <div class="title">
+                                        <i class="dropdown icon"></i>
+                                        <span id="batch_title_1_staff"></span>
+                                    </div>
+                                    <div id="batch_content_1_staff" class="content">
+                                        <p class="transition hidden"></p>
+                                    </div>
+                                    <div class="title">
+                                        <i class="dropdown icon"></i>
+                                        <span id="batch_title_2_staff"></span>
+                                    </div>
+                                    <div id="batch_content_2_staff" class="content">
+                                        <p class="transition hidden"></p>
+                                    </div>
+                                    <div class="title">
+                                        <i class="dropdown icon"></i>
+                                        <span id="batch_title_3_staff"></span>
+                                    </div>
+                                    <div id="batch_content_3_staff" class="content">
+                                        <p class="transition hidden"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="ui divider"></div>
+
+                            <button class="ui fluid green button" type="button" onclick="import_staff()"><i class="ui icon upload"></i>Submeter</button>
+                        </div>
+                        <div class="ui divider"></div>
+                        <div class="ui form">
                             <div class="title">
-                                Exportar hackers:
+                                Exportar Coisas:
                             </div>
                             <br />
                             <a href="{% url 'export_basic_info' %}" class="ui fluid blue button">Infos básicas</a>
@@ -73,6 +113,10 @@
                             <a href="{% url 'export_basic_info_unconfirmed' %}" class="ui fluid blue button">Infos básicas Não Confirmados</a>
                             <br />
                             <a href="{% url 'export_advanced_info' %}" class="ui fluid red button">Infos avançadas</a>
+                            <br />
+                            <a href="{% url 'export_teams' %}" class="ui fluid gray button">Equipes</a>
+                            <br />
+                            <a href="{% url 'export_staff' %}" class="ui fluid orange button">Staff</a>
                         </div>
                     </div>
                 </div>
@@ -84,6 +128,7 @@
 <script type="text/javascript">
     var csrf = "{{ csrf_token }}";
     var import_hackers_url = "{% url 'hackers:batch_import_hackers' %}";
+    var import_staff_url = "{% url 'staff:batch_import_staff' %}";
     var search_hackers_url = "{% url 'hackers:search_hackers' %}";
     var check_in_hacker_url = "{% url 'hackers:check_in_hacker' %}";
     var get_hacker_check_in_url = "{% url 'hackers:get_hacker_check_in' %}";

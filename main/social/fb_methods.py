@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 from django.contrib.auth import login
 from django.contrib import messages
 from hackers.models import Hacker
+from staff.models import Staff
 
 
 app_id = settings.FACEBOOK_KEY
@@ -34,9 +35,9 @@ def canv_url(request):
 
     # Check whether the last call was secure and use its protocol
     if request.is_secure():
-        return 'https://' + request.get_host() + reverse('hackers:facebook_login_response')
+        return 'https://' + request.get_host() + reverse('main:facebook_login_response')
     else:
-        return 'http://' + request.get_host() + reverse('hackers:facebook_login_response')
+        return 'http://' + request.get_host() + reverse('main:facebook_login_response')
 
 
 def auth_url(request):
@@ -92,20 +93,20 @@ def login_successful(code, request):
     # Get the user's scope ID from debug data
     social_id = debug['user_id']
 
-    # Save new hacker information
+    # Save new hacker or staff information
     if request.user.is_authenticated:
-        hacker = request.user.hacker
-        hacker.fb_social_id = social_id
-        hacker.save()
+        obj = request.user.hacker_or_staff
+        obj.fb_social_id = social_id
+        obj.save()
     else:
-        hacker = Hacker.objects.filter(fb_social_id=social_id).first()
+        obj = Hacker.objects.filter(fb_social_id=social_id).first() or Staff.objects.filter(fb_social_id=social_id).first()
 
     # Try to login the user
-    if hacker is None:
+    if obj is None:
         messages.add_message(request, messages.ERROR, 'Você precisa estar inscrito(a) para entrar!')
     else:
-        login(request, hacker.user)
-        messages.add_message(request, messages.SUCCESS, 'Olá, ' + hacker.first_name + '!')
+        login(request, obj.user)
+        messages.add_message(request, messages.SUCCESS, 'Olá, ' + obj.first_name + '!')
 
     return request
 

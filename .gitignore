@@ -2,6 +2,8 @@ prev_app/
 *.log
 azure.csv
 surveys/
+events/
+node_modules/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -27,6 +27,8 @@ handler403 = 'main.views.handler500'
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('hackers.urls', namespace='hackers')),
+    url(r'^', include('main.urls', namespace='main')),
+    url(r'^', include('staff.urls', namespace='staff')),
     url(r'^$', views.index, name='index'),
     url(r'^logout$', logout, {'next_page': '/'}, name='logout'),
     url(r'^dashboard$', views.dashboard, name='dashboard'),
@@ -38,6 +40,8 @@ urlpatterns = [
     url(r'^godmode/export/basic_confirmed$', views.export_basic_info_confirmed, name='export_basic_info_confirmed'),
     url(r'^godmode/export/basic_unconfirmed$', views.export_basic_info_unconfirmed, name='export_basic_info_unconfirmed'),
     url(r'^godmode/export/advanced$', views.export_advanced_info, name='export_advanced_info'),
+    url(r'^godmode/export/teams$', views.export_teams, name='export_teams'),
+    url(r'^godmode/export/staff$', views.export_staff, name='export_staff'),
     url(r'^godmode/error$', views.test_error, name='test_error'),
 
     url(r'^godmode/batch_confirm$', h_views.batch_confirm_hackers, name='batch_confirm'),

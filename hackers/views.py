@@ -1,42 +1,18 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import redirect, get_object_or_404, render, reverse
-from django.contrib.auth import login
+from django.shortcuts import redirect, get_object_or_404, render
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
 from django.db.models import Q
 from .models import Hacker
 from .forms import ApplicationForm
-from .social import fb_methods, gh_methods
 from django.conf import settings
 from main.decorators import require_condition
-from main.email import recover_token_email, notify_checkin
+from main.email import notify_checkin
 from main.mailchimp import add_subscriber, remove_subscriber, batch_confirm
 from .util import proc
 import json
 import io
-from time import sleep
 # Create your views here.
-
-
-def login_from_token(request, token="42"):
-    hacker = Hacker.objects.filter(token=token).first()
-    if hacker is None:
-        messages.add_message(request, messages.ERROR, "Não te encontramos :(")
-        sleep(2)
-        return redirect('index')
-
-    # Do not allow non active hackers
-    if settings.HACKATHON_STARTED and not hacker.active:
-        return HttpResponseForbidden()
-
-    # Activate hackers on login
-    if not hacker.active:
-        hacker.active = True
-        hacker.save()
-
-    login(request, hacker.user)
-    messages.add_message(request, messages.SUCCESS, "Olá, {}!".format(hacker.first_name))
-    return redirect('dashboard')
 
 
 @require_condition(settings.APPLICATION_OPEN)
@@ -175,7 +151,7 @@ def import_hackers(request):
     return HttpResponse(json.dumps({"success": response_success, "repeated": response_repeated, "fail": response_fail}), content_type="application/json")
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def search_hacker(request):
     data = request.POST['data']
     hackers = Hacker.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data) | Q(token__icontains=data)).filter(application__completed=True)[0:10]
@@ -187,7 +163,7 @@ def search_hacker(request):
     ] for hacker in hackers]), content_type="application/json")
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def check_in_hacker(request):
     hacker_id = request.POST['id']
     hacker = get_object_or_404(Hacker, id=hacker_id)
@@ -200,7 +176,7 @@ def check_in_hacker(request):
     return HttpResponse(json.dumps({"res": hacker.checked_in, "id": hacker.id}), content_type="application/json")
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def notify_check_in_hacker(request):
     hacker = get_object_or_404(Hacker, id=request.POST['id'])
     if hacker.checked_in:
@@ -208,7 +184,7 @@ def notify_check_in_hacker(request):
     return HttpResponse()
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def get_hacker_check_in(request):
     hacker_id = request.POST['id']
     hacker = get_object_or_404(Hacker, id=hacker_id)
@@ -220,90 +196,6 @@ def get_hacker_check_in(request):
 def toggle_withdraw(request):
     hacker = request.user.hacker
     hacker.withdraw = not hacker.withdraw
-    hacker.save()
-    return redirect('dashboard')
-
-
-@login_required
-def change_token(request):
-    hacker = request.user.hacker
-    hacker.new_token()
-    add_subscriber(settings.MAILCHIMP_LIST_CONFIRMED, hacker)
-    messages.add_message(request, messages.SUCCESS, 'Token alterado!')
-    return redirect('dashboard')
-
-
-def recover_token(request):
-    hacker = Hacker.objects.filter(email=request.POST['email']).first()
-    if hacker is None:
-        sleep(2)
-        messages.add_message(request, messages.ERROR, 'Não te encontramos :(')
-    else:
-        recover_token_email(hacker)
-        messages.add_message(request, messages.SUCCESS, 'Cheque seu email :)')
-    return redirect('index')
-
-
-# Social Views
-def facebook_login(request):
-
-    # Generate auth_url and redirect to it
-    return redirect(fb_methods.auth_url(request))
-
-
-def facebook_login_response(request):
-    """Facebook Login Response
-
-    Try to access 'code' from the response. If found, the login was successful. Unsuccessful otherwise
-    """
-
-    try:
-        code = request.GET['code']
-    except:
-        # User cancelled login
-        request = fb_methods.login_canceled(request)
-        return redirect(reverse('index'))
-
-    request = fb_methods.login_successful(code, request)
-    return redirect('dashboard')
-
-
-@login_required
-def remove_facebook(request):
-    hacker = request.user.hacker
-    hacker.fb_social_id = None
-    hacker.save()
-    return redirect('dashboard')
-
-
-# Social Views
-def github_login(request):
-
-    # Generate auth_url and redirect to it
-    return redirect(gh_methods.auth_url(request))
-
-
-def github_login_response(request):
-    """GitHub Login Response
-
-    Try to access 'code' from the response. If found, the login was successful. Unsuccessful otherwise
-    """
-
-    try:
-        code = request.GET['code']
-    except:
-        # User cancelled login
-        request = gh_methods.login_canceled(request)
-        return redirect(reverse('index'))
-
-    request = gh_methods.login_successful(code, request)
-    return redirect('dashboard')
-
-
-@login_required
-def remove_github(request):
-    hacker = request.user.hacker
-    hacker.gh_social_id = None
     hacker.save()
     return redirect('dashboard')
 
