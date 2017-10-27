@@ -7,7 +7,7 @@ import pytz
 import locale
 now = timezone.localtime(timezone.now())
 local = pytz.timezone(str(now.tzinfo))
-locale.setlocale(locale.LC_TIME, "pt_BR")
+# locale.setlocale(locale.LC_TIME, "pt_BR")
 # Create your models here.
 
 
