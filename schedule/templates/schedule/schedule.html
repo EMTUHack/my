@@ -1,0 +1,112 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block sidebar %}
+{% include 'main/sidebar.html' %}
+{% endblock %}
+{% block extend_style %}
+{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="container">
+        <div id="dashboard" class="page">
+            <div class="divided title">
+                Cronograma
+            </div>
+            <div class="ui stackable centered page grid">
+                <div class="column">
+                    <div class="small title">
+                        Eventos atendidos
+                    </div>
+                    <br>
+                    <div class="ui three stackable cards">
+                        {% for att in user.hacker.events_attended.all %}
+                        {% if att.event.is_past and att.event.requires_registration %}
+                        <div class="card">
+                            <div class="content">
+                                <div class="right floated meta">{{ att.event.human_time }}</div>
+                                <div class="header">
+                                    {{ att.event.name }}
+                                </div>
+                                <div class="meta">
+                                    {{ att.event.kind }}
+                                </div>
+                                <div class="description">
+                                    {{ att.event.description }}
+                                </div>
+                                {% if att.event.speaker %}
+                                <div class="ui divider"></div>
+                                Por <b>{{ att.event.speaker }}</b><br><br>
+                                {{ att.event.speaker_description }}
+                                {% endif %}
+                            </div>
+                            <div class="extra content">
+                                Como você avaliaria esse evento?
+                                <br>
+                                <br>
+                                <div class="extra center aligned">
+                                  <div data-id="{{ att.event.id }}" id="star_{{ att.event.id }}" class="ui huge star rating" data-rating="{{ att.rating }}"></div>
+                                  <br><br>
+                                  <div class="ui transparent fluid input">
+                                      <input onkeyup="proc_feedback({{ att.event.id }});" id="feedback_{{ att.event.id }}" maxlength="200" value="{{ att.feedback }}" type="text" placeholder="Escreva seu feedback...">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      {% endif %}
+                      {% endfor %}
+                  </div>
+                  <br>
+                  <div class="ui divider"></div>
+                  <br>
+                  <div class="small title">
+                    Eventos futuros
+                </div>
+                <div class="ui three stackable cards">
+                    {% for event in events %}
+                    <div class="card">
+                        <div class="content">
+                            <div class="right floated meta">{{ event.human_time }}</div>
+                            <div class="header">
+                                {{ event.name }}
+                            </div>
+                            <div class="meta">
+                                {{ event.kind }}
+                            </div>
+                            <div class="description">
+                                {{ event.description }}
+                            </div>
+                            {% if event.speaker %}
+                            <div class="ui divider"></div>
+                            Por <b>{{ event.speaker }}</b><br><br>
+                            {{ event.speaker_description }}
+                            {% endif %}
+                        </div>
+                        {% if event.requires_registration %}
+                        {% if request.user.hacker in event.hackers %}
+                        <div id="att_{{ event.id }}" onclick="toggle_attendance({{ event.id }});" class="ui bottom red attached button">
+                            <i class="remove icon"></i>
+                            Desistir
+                        </div>
+                        {% else %}
+                        <div id="att_{{ event.id }}" onclick="toggle_attendance({{ event.id }});" class="ui bottom green attached button">
+                            <i class="check icon"></i>
+                            Se inscrever
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript">
+    var csrf = "{{ csrf_token }}";
+    var submit_feedback_url = "{% url 'schedule:submit_feedback' %}";
+    var toggle_attendance_url = "{% url 'schedule:toggle_attendance' %}";
+</script>
+<script src="{% static 'main/js/schedule.js' %}"></script>
+{% endblock %}

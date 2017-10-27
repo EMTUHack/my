@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^', include('hackers.urls', namespace='hackers')),
     url(r'^', include('main.urls', namespace='main')),
     url(r'^', include('staff.urls', namespace='staff')),
+    url(r'^', include('schedule.urls', namespace='schedule')),
     url(r'^$', views.index, name='index'),
     url(r'^logout$', logout, {'next_page': '/'}, name='logout'),
     url(r'^dashboard$', views.dashboard, name='dashboard'),

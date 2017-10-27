@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'hackers',
     'main',
     'staff',
+    'schedule',
     'sass_processor',
 ]
 
