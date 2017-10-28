@@ -87,11 +87,11 @@ def stats(request):
         "withdraw": len([h for h in Hacker.objects.all() if h.is_withdraw]),
         "late": len([h for h in Hacker.objects.all() if h.is_late]),
         # Teams
-        "not_have_team": len(Hacker.objects.all()) - len([h for h in Hacker.objects.all() if h.has_team]),
+        "not_have_team": Hacker.objects.filter(team=None).filter(checked_in=True).count(),
         "empty_team": len([t for t in Team.objects.all() if len(t.hackers.all()) == 0]),
         "semi_team": len([t for t in Team.objects.all() if 2 >= len(t.hackers.all()) >= 1]),
         "full_team": len([t for t in Team.objects.all() if len(t.hackers.all()) > 2]),
-        "complete_team": Team.objects.exclude(project__isnull=True).exclude(project__exact='').exclude(location__isnull=True).exclude(location__exact=''),
+        "complete_team": Team.objects.exclude(project__isnull=True).exclude(project__exact='').exclude(location__isnull=True).exclude(location__exact='').exclude(github_url=None).exclude(github_url__iexact=''),
         # Shirts
         "m_p": len(Application.objects.filter(gender="M").filter(shirt_size="P")),
         "m_m": len(Application.objects.filter(gender="M").filter(shirt_size="M")),
