@@ -4,9 +4,7 @@ from django.utils import timezone
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 import pytz
-# import locale
-now = timezone.localtime(timezone.now())
-local = pytz.timezone(str(now.tzinfo))
+# import localegp
 # locale.setlocale(locale.LC_TIME, "pt_BR")
 # Create your models here.
 
@@ -37,8 +35,8 @@ class Event(models.Model):
 
     @property
     def is_past(self):
-        now = timezone.localtime(timezone.now())
-        return self.starts.astimezone(now.tzinfo) < now.astimezone(now.tzinfo)
+        now = timezone.now()
+        return self.starts.astimezone(pytz.utc) < now.astimezone(pytz.utc)
 
     @property
     def hackers(self):

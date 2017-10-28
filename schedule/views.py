@@ -4,11 +4,11 @@ from .models import Event
 from django.utils import timezone
 import pytz
 import json
-now = timezone.now()
 # Create your views here.
 
 
 def schedule(request):
+    now = timezone.now()
     events = Event.objects.filter(starts__gt=now.astimezone(pytz.utc)).order_by('starts')
     return render(request, 'schedule/schedule.html', {'events': events, 'sbar': 'eventos'})
 
