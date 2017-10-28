@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 import pytz
-import locale
+# import locale
 now = timezone.localtime(timezone.now())
 local = pytz.timezone(str(now.tzinfo))
 # locale.setlocale(locale.LC_TIME, "pt_BR")
@@ -37,7 +37,8 @@ class Event(models.Model):
 
     @property
     def is_past(self):
-        return self.starts < now
+        now = timezone.localtime(timezone.now())
+        return self.starts.astimezone(now.tzinfo) < now.astimezone(now.tzinfo)
 
     @property
     def hackers(self):
@@ -45,6 +46,7 @@ class Event(models.Model):
 
     @property
     def human_time(self):
+        now = timezone.localtime(timezone.now())
         return self.starts.astimezone(now.tzinfo).strftime('%a, %H:%M')
 
     def is_hacker_registered(self, hacker):
@@ -88,6 +90,7 @@ class Event(models.Model):
         return attendee
 
     def __str__(self):
+        now = timezone.localtime(timezone.now())
         return "{}({}) @ {}".format(self.name, self.kind, self.starts.astimezone(now.tzinfo))
 
 
@@ -100,7 +103,7 @@ class Attendee(models.Model):
 
 @receiver(pre_save, sender=Event, dispatch_uid="pre_save_event")
 def pre_save_event(sender, instance, **kwargs):
-    print(instance.starts)
+    now = timezone.localtime(timezone.now())
     instance.starts = instance.starts.replace(tzinfo=now.tzinfo)
     instance.ends = instance.ends.replace(tzinfo=now.tzinfo)
-    print(instance.starts)
+    now = timezone.localtime(timezone.now())
