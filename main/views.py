@@ -6,7 +6,7 @@ from django.contrib.auth import login
 from django.http import HttpResponseForbidden
 from django.contrib import messages
 from time import sleep
-from .export import basic, basic_confirmed, basic_unconfirmed, advanced, teams, basic_staff
+from .export import *
 from hackers.models import Hacker, Application, Team
 from staff.models import Staff
 from django.db.models import Q
@@ -135,8 +135,18 @@ def export_advanced_info(request):
 
 
 @user_passes_test(lambda u: u.is_superuser)
+def export_advanced_checkedin_info(request):
+    return advanced(request, [], [])
+
+
+@user_passes_test(lambda u: u.is_superuser)
 def export_teams(request):
     return teams(request)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def export_teams_after(request):
+    return teams_after(request)
 
 
 @user_passes_test(lambda u: u.is_superuser)
