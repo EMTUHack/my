@@ -136,7 +136,7 @@ def export_advanced_info(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def export_advanced_checkedin_info(request):
-    return advanced(request, [], [])
+    return advanced_attended(request, [], [])
 
 
 @user_passes_test(lambda u: u.is_superuser)
