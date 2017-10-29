@@ -112,9 +112,10 @@ def teams(request):
     writer = csv.writer(response, csv.excel)
     response.write(u'\ufeff'.encode('utf8'))  # BOM (optional...Excel needs it to open UTF-8 file properly)
     for obj in Team.objects.exclude(project__isnull=True).exclude(project__exact='').exclude(location__isnull=True).exclude(location__exact='').exclude(github_url=None).exclude(github_url__iexact=''):
-        writer.writerow([
-            obj.name,
-            obj.location,
-            obj.project
-        ])
+        if obj.hackers.all().count() > 0:
+            writer.writerow([
+                obj.name,
+                obj.location,
+                obj.project
+            ])
     return response
