@@ -22,7 +22,7 @@ from hackers import views as h_views
 
 handler404 = 'main.views.handler404'
 handler500 = 'main.views.handler500'
-handler403 = 'main.views.handler500'
+handler403 = 'main.views.handler403'
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
