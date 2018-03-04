@@ -1,6 +1,7 @@
 import csv
 from hackers.models import Hacker, Application, Team
 from staff.models import Staff
+from schedule.models import Event
 from django.http import HttpResponse
 
 
@@ -144,4 +145,22 @@ def teams_after(request):
                 obj.github_url,
                 str([hacker.name for hacker in obj.hackers.all()])
             ])
+    return response
+
+
+def event_summary(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=events.csv'
+    writer = csv.writer(response, csv.excel, delimiter='\t')
+    writer.writerow(["Nome", "Hora", "Palestrante", "Participantes", "Avaliação média", "Comentários"])
+    for obj in Event.objects.all().exclude(requires_registration=False):
+        rr = [r.rating for r in obj.attendees.exclude(rating__isnull=True)]
+        writer.writerow([
+            obj.name,
+            obj.human_time,
+            obj.speaker,
+            len(obj.attendees.all()),
+            (float(sum(rr) / len(rr)) if len(rr) > 0 else '-'),
+            " -#- ".join(["({}) {}".format(r.rating, r.feedback) for r in obj.attendees.exclude(feedback__isnull=True)])
+        ])
     return response

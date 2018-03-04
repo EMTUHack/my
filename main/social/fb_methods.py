@@ -6,6 +6,7 @@ from django.contrib.auth import login
 from django.contrib import messages
 from hackers.models import Hacker
 from staff.models import Staff
+from main.models import Settings
 
 
 app_id = settings.FACEBOOK_KEY
@@ -92,21 +93,38 @@ def login_successful(code, request):
 
     # Get the user's scope ID from debug data
     social_id = debug['user_id']
+    extra_data = graph.get_object(str(social_id) + '/?fields=last_name,first_name,email')
+    last_name = extra_data['last_name']
+    first_name = extra_data['first_name']
+    email = extra_data['email']
 
     # Save new hacker or staff information
     if request.user.is_authenticated:
         obj = request.user.hacker_or_staff
-        obj.fb_social_id = social_id
-        obj.save()
     else:
+        # If the user is not authenticated, search for them on the DB
         obj = Hacker.objects.filter(fb_social_id=social_id).first() or Staff.objects.filter(fb_social_id=social_id).first()
+        if obj is None:
+            obj = Hacker.objects.filter(email=email).first() or Staff.objects.filter(email=email).first()
+    # If the user is not registered, register if registration is open
+    if obj is None:
+        # Try to find by the email
+        if not Settings.registration_is_open():
+            messages.add_message(request, messages.ERROR, 'Inscrições estão fechadas!')
+            return request
+        obj = Hacker()
+
+    obj.fb_social_id = social_id
+    obj.first_name = obj.first_name if getattr(obj, 'first_name', '') else first_name
+    obj.last_name = obj.last_name if getattr(obj, 'last_name', '') else last_name
+    obj.email = obj.email if getattr(obj, 'email', '') else email
+    obj.save()
 
     # Try to login the user
     if obj is None:
         messages.add_message(request, messages.ERROR, 'Você precisa estar inscrito(a) para entrar!')
     else:
         login(request, obj.user)
-        messages.add_message(request, messages.SUCCESS, 'Olá, ' + obj.first_name + '!')
 
     return request
 

@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.conf import settings
-from main.decorators import require_condition
+from datetime import datetime
+import json
+import pytz
 from django.contrib.auth import login
 from django.http import HttpResponseForbidden
 from django.contrib import messages
@@ -11,14 +13,19 @@ from hackers.models import Hacker, Application, Team
 from staff.models import Staff
 from django.db.models import Q
 from collections import Counter
+from .models import Settings
 from .stats import get_grams
 from .email import recover_token_email
+from hackers.tasks import send_verify_email as sve
 from .social import fb_methods, gh_methods
 from .mailchimp import add_subscriber
+from .util import cycle_waitlist
 # Create your views here.
 
 
 def index(request):
+    if len(Settings.objects.all()) == 0:
+        Settings().save()
     if request.user.is_authenticated:
         return redirect("dashboard")
     return render(request, 'main/login.html')
@@ -33,7 +40,7 @@ def login_from_token(request, token="42"):
 
     if hacker_or_staff.user.is_hacker:
         # Do not allow non active hackers
-        if (settings.HACKATHON_STARTED and not hacker_or_staff.active) and not hacker_or_staff.second_chance:
+        if (settings.HACKATHON_STARTED and not hacker_or_staff.active):
             return HttpResponseForbidden()
 
         # Activate hackers on login
@@ -42,7 +49,6 @@ def login_from_token(request, token="42"):
             hacker_or_staff.save()
 
     login(request, hacker_or_staff.user)
-    messages.add_message(request, messages.SUCCESS, "Olá, {}!".format(hacker_or_staff.first_name))
     return redirect('dashboard')
 
 
@@ -51,8 +57,7 @@ def dashboard(request):
     return render(request, 'main/dashboard.html', {"sbar": "dashboard"})
 
 
-@require_condition(settings.HACKATHON_STARTED)
-@user_passes_test(lambda u: u.hacker.is_checkedin)
+@user_passes_test(lambda u: u.hacker.is_checkedin and Settings.hackathon_is_happening())
 def team(request):
     return render(request, 'main/team.html', {"sbar": "team"})
 
@@ -63,16 +68,149 @@ def admin(request):
 
 
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def manage_hackers(request):
+    return render(request, 'main/hacker_management.html', {"sbar": "manage_hackers"})
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def fetch_submitted_hackers(request):
+    hackers = Hacker.objects.all()
+    submitted = [hacker for hacker in hackers if hacker.is_submitted]
+    data = {
+        "data": [
+            [
+                hacker.name,
+                hacker.email,
+                hacker.application.university,
+                hacker.application.enroll_year,
+                '<a onclick="show_pending(' + str(hacker.id) + ')" class="ui button red">Avaliar</a>',
+                (hacker.created - datetime(1970, 1, 1).replace(tzinfo=pytz.UTC)).total_seconds()
+            ] for hacker in submitted
+        ]
+    }
+    return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def fetch_admitted_hackers(request):
+    hackers = Hacker.objects.all()
+    submitted = [hacker for hacker in hackers if hacker.is_admitted]
+    data = {
+        "data": [
+            [
+                hacker.name,
+                hacker.email,
+                hacker.application.university,
+                hacker.application.enroll_year,
+                '<a onclick="show_admitted(' + str(hacker.id) + ')" class="ui button red">Avaliar</a>'
+            ] for hacker in submitted
+        ]
+    }
+    return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def fetch_declined_hackers(request):
+    hackers = Hacker.objects.all()
+    submitted = [hacker for hacker in hackers if hacker.is_declined]
+    data = {
+        "data": [
+            [
+                hacker.name,
+                hacker.email,
+                hacker.application.university,
+                hacker.application.enroll_year,
+                '<a onclick="show_declined(' + str(hacker.id) + ')" class="ui button red">Avaliar</a>'
+            ] for hacker in submitted
+        ]
+    }
+    return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def fetch_waitlist_hackers(request):
+    hackers = Hacker.objects.all()
+    submitted = [hacker for hacker in hackers if hacker.is_waitlist]
+    data = {
+        "data": [
+            [
+                hacker.name,
+                hacker.email,
+                hacker.application.university,
+                hacker.application.enroll_year,
+                '<a onclick="show_waitlist(' + str(hacker.id) + ')" class="ui button red">Avaliar</a>',
+                (hacker.waitlist_date - datetime(1970, 1, 1).replace(tzinfo=pytz.UTC)).total_seconds()
+            ] for hacker in submitted
+        ]
+    }
+    return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def fetch_checkedin_hackers(request):
+    hackers = Hacker.objects.all()
+    submitted = [hacker for hacker in hackers if hacker.is_checkedin]
+    data = {
+        "data": [
+            [
+                hacker.name,
+                hacker.email,
+                hacker.application.university,
+                hacker.application.enroll_year,
+                '<a onclick="show_checkedin(' + str(hacker.id) + ')" class="ui button red">Avaliar</a>'
+            ] for hacker in submitted
+        ]
+    }
+    return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def get_hacker_application(request):
+    hacker = get_object_or_404(Hacker, id=request.POST['id'])
+    info = hacker.application.export_fields([])
+    info.update(hacker.export_fields(['team']))
+    info.update({"id": hacker.id})
+    return HttpResponse(json.dumps(info), content_type="application/json")
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def admit_hacker(request):
+    hacker = get_object_or_404(Hacker, id=request.POST['id'])
+    hacker.admit()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def decline_hacker(request):
+    hacker = get_object_or_404(Hacker, id=request.POST['id'])
+    hacker.decline()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def unwaitlist_hacker(request):
+    hacker = get_object_or_404(Hacker, id=request.POST['id'])
+    hacker.unwaitlist()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def manual_cycle_waitlist(request):
+    cycle_waitlist(100)
+    return redirect('admin')
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def checkin(request):
     return render(request, 'main/checkin.html', {"sbar": "checkin"})
 
 
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def stats(request):
-    motivations = [a.essay for a in Application.objects.exclude(essay='').exclude(essay=None)]
+    motivations = [a.essay for a in Application.objects.exclude(essay='').exclude(essay=None).filter(hacker__confirmed=True)]
     motivations_1 = get_grams(motivations)
     motivations_2 = get_grams(motivations, 2)
-    descriptions = [a.description for a in Application.objects.exclude(description='').exclude(description=None)]
+    descriptions = [a.description for a in Application.objects.exclude(description='').exclude(description=None).filter(hacker__confirmed=True)]
     descriptions_1 = get_grams(descriptions)
     descriptions_2 = get_grams(descriptions, 2)
     data = {
@@ -83,9 +221,9 @@ def stats(request):
         # Hackers
         "checkin": len([h for h in Hacker.objects.all() if h.is_checkedin]),
         "confirmed": len([h for h in Hacker.objects.all() if h.is_confirmed]),
-        "incomplete": len([h for h in Hacker.objects.all() if h.is_incomplete]),
+        "admitted": len([h for h in Hacker.objects.all() if h.is_admitted]),
         "withdraw": len([h for h in Hacker.objects.all() if h.is_withdraw]),
-        "late": len([h for h in Hacker.objects.all() if h.is_late]),
+        "waitlist": len([h for h in Hacker.objects.all() if h.is_waitlist]),
         # Teams
         "not_have_team": Hacker.objects.filter(team=None).filter(checked_in=True).count(),
         "empty_team": len([t for t in Team.objects.all() if len(t.hackers.all()) == 0]),
@@ -93,25 +231,83 @@ def stats(request):
         "full_team": len([t for t in Team.objects.all() if len(t.hackers.all()) > 2]),
         "complete_team": Team.objects.exclude(project__isnull=True).exclude(project__exact='').exclude(location__isnull=True).exclude(location__exact='').exclude(github_url=None).exclude(github_url__iexact=''),
         # Shirts
-        "m_p": len(Application.objects.filter(gender="M").filter(shirt_size="P")),
-        "m_m": len(Application.objects.filter(gender="M").filter(shirt_size="M")),
-        "m_g": len(Application.objects.filter(gender="M").filter(shirt_size="G")),
-        "m_gg": len(Application.objects.filter(gender="M").filter(shirt_size="GG")),
-        "f_p": len(Application.objects.filter(Q(gender="F") | Q(gender="O")).filter(shirt_size="P")),
-        "f_m": len(Application.objects.filter(Q(gender="F") | Q(gender="O")).filter(shirt_size="M")),
-        "f_g": len(Application.objects.filter(Q(gender="F") | Q(gender="O")).filter(shirt_size="G")),
-        "f_gg": len(Application.objects.filter(Q(gender="F") | Q(gender="O")).filter(shirt_size="GG")),
+        "m_p": len(Application.objects.filter(shirt_style="Normal").filter(shirt_size="P").filter(hacker__confirmed=True)),
+        "m_m": len(Application.objects.filter(shirt_style="Normal").filter(shirt_size="M").filter(hacker__confirmed=True)),
+        "m_g": len(Application.objects.filter(shirt_style="Normal").filter(shirt_size="G").filter(hacker__confirmed=True)),
+        "m_gg": len(Application.objects.filter(shirt_style="Normal").filter(shirt_size="GG").filter(hacker__confirmed=True)),
+        "f_p": len(Application.objects.filter(shirt_style="Babylook").filter(shirt_size="P").filter(hacker__confirmed=True)),
+        "f_m": len(Application.objects.filter(shirt_style="Babylook").filter(shirt_size="M").filter(hacker__confirmed=True)),
+        "f_g": len(Application.objects.filter(shirt_style="Babylook").filter(shirt_size="G").filter(hacker__confirmed=True)),
+        "f_gg": len(Application.objects.filter(shirt_style="Babylook").filter(shirt_size="GG").filter(hacker__confirmed=True)),
         # Extras
         "sleep": len(Application.objects.filter(sleeping_bag=True)),
         "pill": len(Application.objects.filter(pillow=True)),
-        "diet": Counter([d.diet.lower() for d in Application.objects.exclude(diet__isnull=True).exclude(diet__exact='')]).most_common(),
-        "needs": Counter([d.special_needs.lower() for d in Application.objects.exclude(special_needs__isnull=True).exclude(special_needs__exact='')]).most_common(),
+        "diet": Counter([d.diet.lower() for d in Application.objects.exclude(diet__isnull=True).exclude(diet__exact='').filter(hacker__confirmed=True)]).most_common(),
+        "needs": Counter([d.special_needs.lower() for d in Application.objects.exclude(special_needs__isnull=True).exclude(special_needs__exact='').filter(hacker__confirmed=True)]).most_common(),
         "motivations_1": Counter(motivations_1).most_common(10),
         "motivations_2": Counter(motivations_2).most_common(10),
         "descriptions_1": Counter(descriptions_1).most_common(10),
         "descriptions_2": Counter(descriptions_2).most_common(10),
     }
     return render(request, 'main/stats.html', {"sbar": "stats", "data": data})
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def change_registration_open(request):
+    date = datetime.strptime(request.POST['date'], "%a, %d %b %Y %H:%M:%S %Z").replace(tzinfo=pytz.utc)
+    sett = Settings.get()
+    sett.registration_open = date
+    sett.save()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def change_registration_close(request):
+    date = datetime.strptime(request.POST['date'], "%a, %d %b %Y %H:%M:%S %Z").replace(tzinfo=pytz.utc)
+    sett = Settings.get()
+    sett.registration_close = date
+    sett.save()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def change_confirmation(request):
+    date = datetime.strptime(request.POST['date'], "%a, %d %b %Y %H:%M:%S %Z").replace(tzinfo=pytz.utc)
+    sett = Settings.get()
+    sett.confirmation = date
+    sett.save()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def change_hackathon_start(request):
+    date = datetime.strptime(request.POST['date'], "%a, %d %b %Y %H:%M:%S %Z").replace(tzinfo=pytz.utc)
+    sett = Settings.get()
+    sett.hackathon_start = date
+    sett.save()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def change_hackathon_end(request):
+    date = datetime.strptime(request.POST['date'], "%a, %d %b %Y %H:%M:%S %Z").replace(tzinfo=pytz.utc)
+    sett = Settings.get()
+    sett.hackathon_end = date
+    sett.save()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def change_max_hackers(request):
+    n = request.POST['number']
+    try:
+        n = int(n)
+        sett = Settings.get()
+        sett.max_hackers = n
+        sett.save()
+    except ValueError:
+        pass
+    return HttpResponse()
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -154,6 +350,11 @@ def export_staff(request):
     return basic_staff(request)
 
 
+@user_passes_test(lambda u: u.is_superuser)
+def export_events(request):
+    return event_summary(request)
+
+
 @login_required
 def change_token(request):
     hacker_or_staff = request.user.hacker_or_staff
@@ -173,6 +374,25 @@ def recover_token(request):
         recover_token_email(obj)
         messages.add_message(request, messages.SUCCESS, 'Cheque seu email :)')
     return redirect('index')
+
+
+@login_required
+def send_verify_email(request):
+    obj = request.user.hacker
+    if not obj.unverified:
+        return redirect('dashboard')
+    obj.new_verification_code()
+    sve.delay(obj.id)
+    messages.add_message(request, messages.SUCCESS, 'Cheque seu email :)')
+    return redirect('dashboard')
+
+
+def check_verify_email(request, code):
+    obj = get_object_or_404(Hacker, verification_code=code)
+    obj.unverified = False
+    obj.new_verification_code()
+    login(request, obj.user)
+    return redirect('dashboard')
 
 
 # Social Views

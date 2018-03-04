@@ -29,27 +29,51 @@
                             <br />
                             <div class="divided title">Informações Básicas</div>
                             <div class="two fields">
+                                <div class="field {% if formbasic.first_name.errors.as_text %}error{% endif %}">
+                                    <label>{{ formbasic.first_name.label}}</label>
+                                    <span style="color: red" class="small">{{ formbasic.first_name.errors.as_text }}</span>
+                                    {{ formbasic.first_name }}
+                                </div>
+                                <div class="field {% if formbasic.last_name.errors.as_text %}error{% endif %}">
+                                    <label>{{ formbasic.last_name.label}}</label>
+                                    <span style="color: red" class="small">{{ formbasic.last_name.errors.as_text }}</span>
+                                    {{ formbasic.last_name }}
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field {% if formbasic.email.errors.as_text %}error{% endif %}">
+                                    <label>{{ formbasic.email.label}}</label>
+                                    <span style="color: red" class="small">{{ formbasic.email.errors.as_text }}</span>
+                                    {{ formbasic.email }}
+                                </div>
                                 <div class="field {% if form.phone.errors.as_text %}error{% endif %}">
                                     <label>{{ form.phone.label}}</label>
                                     <span style="color: red" class="small">{{ form.phone.errors.as_text }}</span>
                                     {{ form.phone }}
                                 </div>
+                            </div>
+                            <div class="two fields">
                                 <div class="field {% if form.age.errors.as_text %}error{% endif %}">
                                     <label>{{ form.age.label}}</label>
                                     <span style="color: red" class="small">{{ form.age.errors.as_text }}</span>
                                     {{ form.age }}
                                 </div>
-                            </div>
-                            <div class="two fields">
                                 <div class="field {% if form.gender.errors.as_text %}error{% endif %}">
                                     <label>{{ form.gender.label}}</label>
                                     <span style="color: red" class="small">{{ form.gender.errors.as_text }}</span>
                                     {{ form.gender }}
                                 </div>
+                            </div>
+                            <div class="two fields">
                                 <div class="field {% if form.shirt_size.errors.as_text %}error{% endif %}">
                                     <label>{{ form.shirt_size.label}}</label>
                                     <span style="color: red" class="small">{{ form.shirt_size.errors.as_text }}</span>
                                     {{ form.shirt_size }}
+                                </div>
+                                <div class="field {% if form.shirt_style.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.shirt_style.label}}</label>
+                                    <span style="color: red" class="small">{{ form.shirt_style.errors.as_text }}</span>
+                                    {{ form.shirt_style }}
                                 </div>
                             </div>
                             <div class="two fields">

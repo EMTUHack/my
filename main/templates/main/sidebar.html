@@ -10,9 +10,11 @@
 
         <div ng-show="currentUser.verified">
             {% if user.is_hacker and hack_application_open %}
+            {% if user.hacker.is_unverified or user.hacker.is_incomplete or user.hacker.is_submitted %}
             <div class="item {% if sbar == 'application' %}active{% endif %}">
                 <a href="{% url 'hackers:application' %}" class="fill-div">Aplicação</a>
             </div>
+            {% endif %}
             {% endif %}
             {% if user.is_hacker and hack_has_started and user.hacker.is_checkedin %}
             <div class="item {% if sbar == 'team' %}active{% endif %}">
@@ -38,6 +40,9 @@
             </div>
             {% endif %}
             {% if user.is_superuser or user.is_staff_member  %}
+            <div class="item {% if sbar == 'manage_hackers' %}active{% endif %}">
+                <a href="{% url 'manage_hackers' %}" class="fill-div">Gerenciar Hackers</a>
+            </div>
             <div class="item {% if sbar == 'stats' %}active{% endif %}">
                 <a href="{% url 'stats' %}" class="fill-div">Stats</a>
             </div>

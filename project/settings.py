@@ -178,21 +178,23 @@ GITHUB_SECRET = os.environ.get('GITHUB_SECRET')
 GITHUB_PERMISSIONS = eval(os.environ.get('GITHUB_PERMISSIONS', '[]'))
 
 # Hackathon settings
-HACKATHON_STARTED = eval(os.environ.get('HACKATHON_STARTED', 'false').capitalize())
-HACKATHON_ENDED = eval(os.environ.get('HACKATHON_ENDED', 'false').capitalize())
-APPLICATION_OPEN = eval(os.environ.get('APPLICATION_OPEN', 'true').capitalize())
 TEAM_MAX_SIZE = int(os.environ.get('TEAM_MAX_SIZE', 4))
 TOKEN_SIZE = int(os.environ.get('TOKEN_SIZE', 6))
 ROOT_URL = os.environ.get('ROOT_URL')
 HACKATHON_NAME = os.environ.get('HACKATHON_NAME')
 HELPER = os.environ.get('HELPER')
 CHAT = os.environ.get('CHAT')
+EVENT_RULES = os.environ.get('EVENT_RULES')
 
 # Sponsor
 AZURE_PASSES = os.environ.get('AZURE_PASSES', None)
 
 # MailChimp
+USE_MAILCHIMP = os.environ.get('USE_MAILCHIMP', False)
 MAILCHIMP_USER = os.environ.get('MAILCHIMP_USER', None)
 MAILCHIMP_SECRET = os.environ.get('MAILCHIMP_SECRET', None)
 MAILCHIMP_LIST_PRE = os.environ.get('MAILCHIMP_LIST_PRE', None)
 MAILCHIMP_LIST_CONFIRMED = os.environ.get('MAILCHIMP_LIST_CONFIRMED', None)
+
+# Celery stuff
+CELERY_BROKER_URL = str(os.environ.get('REDIS_URL'))

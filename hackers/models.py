@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.crypto import get_random_string
+from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from django.core.validators import MinValueValidator
 import requests
+from main.models import Settings
+from .tasks import send_notify_admitted, send_notify_unwaitlist, send_notify_waitlist, send_notify_decline
 from collections import OrderedDict
 # Create your models here.
 
@@ -28,6 +32,10 @@ SHIRT_SIZES = (
     ('M', 'M'),
     ('G', 'G'),
     ('GG', 'GG'),
+)
+SHIRT_STYLE = (
+    ('Normal', 'Normal'),
+    ('Babylook', 'Babylook'),
 )
 CV_TYPES = (
     ('LI', 'LinkedIn'),
@@ -77,6 +85,10 @@ class Hacker(models.Model):
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
 
+    @property
+    def name(self):
+        return "{} {}".format(self.first_name.strip(), self.last_name.strip())
+
     # Team
     team = models.ForeignKey(
         Team,
@@ -87,11 +99,26 @@ class Hacker(models.Model):
     )
 
     # Registration
-    token = models.CharField(max_length=6, unique=True, null=True, blank=True)
-    active = models.BooleanField(default=False)
+    token = models.CharField(max_length=20, unique=True, null=True, blank=True)
+
+    # Registration Status
+    active = models.BooleanField(default=False)  # Active hackers are those that log in at least once
+    incomplete = models.BooleanField(default=True)
+    unverified = models.BooleanField(default=False)
+
+    verification_code = models.CharField(max_length=20, unique=True, null=True, blank=True)
+
+    @property
+    def submitted(self):
+        return not self.incomplete and not self.unverified
+
+    admitted = models.BooleanField(default=False)
+    declined = models.BooleanField(default=False)
+    waitlist = models.BooleanField(default=False)
+    waitlist_date = models.DateTimeField(auto_now_add=True)
     checked_in = models.BooleanField(default=False)
     withdraw = models.BooleanField(default=False)
-    second_chance = models.BooleanField(default=False)
+    confirmed = models.BooleanField(default=False)
 
     # Social Login
     fb_social_id = models.CharField(max_length=50, null=True, blank=True, unique=True)
@@ -109,69 +136,133 @@ class Hacker(models.Model):
         return self.gh_social_id is not None
 
     @property
-    def name(self):
-        return "{} {}".format(self.first_name, self.last_name)
-
-    @property
     def has_team(self):
         return self.team is not None
 
     @property
     def finished_application(self):
-        return hasattr(self, 'application') and getattr(self, 'application').completed
-
-    @property
-    def state_code(self):
-        # Code number grows proportionaly to how far they are from being a valid hacker
-        # Checked in - Hackers can only be checked in if they are confirmed as well
-        if self.checked_in:
-            return 0
-        # Check if the hacker hasnt completed their application
-        if not self.finished_application:
-            # If the application period has ended, thet cant complete their registration
-            if not settings.APPLICATION_OPEN and not self.second_chance:
-                return 4
-            # Incompleted hackers can still complete their registration
-            return 2
-        if self.withdraw:
-            if not settings.APPLICATION_OPEN:
-                return 4
-            # withdraw'd hackers don't want to take part in the hackathon
-            return 3
-
-        # Else, the hacker is ready to go
-        return 1
+        return hasattr(self, 'application') and not self.incomplete
 
     @property
     def state(self):
-        responses = {
-            0: ("checked in", "Check-in realizado"),
-            1: ("confirmed", "Tudo Pronto"),
-            2: ("incomplete", "Aplicação Incompleta"),
-            3: ("withdraw", "Aplicação Cancelada"),
-            4: ("late", "Aplicação atrasada"),
-        }
-        return responses[self.state_code]
+        # Code number grows proportionaly to how far they are from being a valid hacker
+        if self.checked_in:
+            return ("checkedin", "Check-in Realizado")
+        if self.confirmed:
+            return ("confirmed", "Confirmado")
+        if not Settings.can_confirm(self.waitlist):
+            return ("late", "Inscrições Encerradas")
+        if self.withdraw:
+            return ("withdraw", "Desistência")
+        if self.waitlist:
+            return ("waitlist", "Fila de Espera")
+        if self.admitted:
+            return ("admitted", "Aplicação Aprovada")
+        if self.declined:
+            return ("declined", "Aplicação Recusada")
+        if self.submitted:
+            return ("submitted", "Aplicação Enviada")
+        if not Settings.registration_is_open():
+            return ("late", "Inscrições Encerradas")
+        if self.unverified:
+            return ("unverified", "Confirmar Email")
+        if self.incomplete:
+            return ("incomplete", "Aplicação Incompleta")
+        return ("unknown", "unknown")
 
     @property
     def is_checkedin(self):
-        return self.state[0] == "checked in"
+        # Is present at the event
+        return self.state[0] == "checkedin"
 
     @property
     def is_confirmed(self):
+        # Was admitted and confirmed that can go
         return self.state[0] == "confirmed"
 
     @property
-    def is_incomplete(self):
-        return self.state[0] == "incomplete"
-
-    @property
     def is_withdraw(self):
+        # Withdrew from the event. If decides to return, must be put on waitlist
         return self.state[0] == "withdraw"
 
     @property
+    def is_waitlist(self):
+        # Was admitted but the maximum number of hackers was exceeded.
+        # Will be unwaitlisted as people withdraw or on the day after confirmation date.
+        return self.state[0] == "waitlist"
+
+    @property
+    def is_admitted(self):
+        # Was admitted and can confirm or withdraw from the event
+        return self.state[0] == "admitted"
+
+    @property
+    def is_declined(self):
+        # Was declined
+        return self.state[0] == "declined"
+
+    @property
+    def is_submitted(self):
+        # Submitted their application for review
+        return self.state[0] == "submitted"
+
+    @property
     def is_late(self):
+        # Did not confirm their presence by the specified date
         return self.state[0] == "late"
+
+    @property
+    def is_unverified(self):
+        # Did not verify their email address
+        return self.state[0] == "unverified"
+
+    @property
+    def is_incomplete(self):
+        # Application is still incomplete
+        return self.state[0] == "incomplete"
+
+    def admit(self):
+        self.admitted = True
+        self.declined = False
+        self.waitlist = False
+        self.withdraw = False
+        self.save()
+        if Settings.hackathon_is_full():
+            return self.put_on_waitlist()
+        send_notify_admitted.delay(self.id)
+
+    def decline(self):
+        self.admitted = False
+        self.declined = True
+        self.waitlist = False
+        self.withdraw = False
+        self.save()
+        send_notify_decline.delay(self.id)
+        from main.util import cycle_waitlist
+        cycle_waitlist(1)
+
+    def put_on_waitlist(self):
+        self.waitlist = True
+        self.waitlist_date = timezone.now()
+        self.save()
+
+        send_notify_waitlist.delay(self.id)
+
+    def unwaitlist(self):
+        self.waitlist = False
+        self.save()
+        send_notify_unwaitlist.delay(self.id)
+
+    def withdraw_from_event(self):
+        self.confirmed = False
+        self.withdraw = True
+        self.save()
+        from main.util import cycle_waitlist
+        cycle_waitlist(1)
+
+    def confirm(self):
+        self.confirmed = True
+        self.save()
 
     # Enter or Create Team method
     def enter_team(self, name):
@@ -199,6 +290,14 @@ class Hacker(models.Model):
     def leave_team(self):
         team = self.team
         team.hackers.remove(self)
+
+    def new_verification_code(self):
+        code = get_random_string(length=TOKEN_SIZE)
+        if Hacker.objects.filter(verification_code=code).first() is not None:
+            return self.new_verification_code()
+        self.verification_code = code
+        self.save()
+        return self.verification_code
 
     def new_token(self):
         from staff.models import Staff
@@ -270,7 +369,7 @@ class Application(models.Model):
     phone = models.CharField(max_length=20, null=True, blank=True)
     # Basic
     gender = models.CharField(max_length=1, choices=GENDER_TYPES)
-    age = models.IntegerField()
+    age = models.IntegerField(validators=[MinValueValidator(18, "A idade mínima é 18 anos.")])
     university = models.CharField(max_length=100)
     enroll_year = models.IntegerField(null=True)
     # Needs
@@ -278,6 +377,7 @@ class Application(models.Model):
     special_needs = models.CharField(max_length=100, default="", null=True, blank=True)
     # Swag
     shirt_size = models.CharField(max_length=3, choices=SHIRT_SIZES)
+    shirt_style = models.CharField(max_length=15, choices=SHIRT_STYLE)
     # CV
     cv_type = models.CharField(max_length=3, choices=CV_TYPES, null=True, blank=False)
     cv = models.CharField(max_length=300, null=True, blank=False)
@@ -291,8 +391,9 @@ class Application(models.Model):
     sleeping_bag = models.BooleanField(default=False)
     pillow = models.BooleanField(default=False)
 
-    # Internal
-    completed = models.BooleanField(default=False)
+    @property
+    def shirt_string(self):
+        return "[{}]{} {}".format(self.gender, self.shirt_size, self.shirt_style)
 
     @property
     def extras(self):
@@ -307,18 +408,24 @@ class Application(models.Model):
 
         return '<br>'.join(res)
 
-    def export_fields(self, exclude=[]):
+    def export_fields(self, exclude=['gender', 'shirt_size', 'shirt_style', 'special_needs', 'diet', 'essay']):
         fields = OrderedDict([
             ('phone', 'Celular'),
             ('age', 'Idade'),
+            ('gender', 'Gênero'),
             ('university', 'Universidade'),
             ('enroll_year', 'Ano de Ingresso'),
+            ('shirt_size', 'Tamanho da Camisa'),
+            ('shirt_style', 'Tipo da Camisa'),
+            ('special_needs', 'Necessidades Especiais'),
+            ('diet', 'Dieta'),
             ('cv_type', 'Tipo do Currículo'),
             ('cv', 'Currículo'),
             ('cv2_type', 'Tipo do Currículo 2'),
             ('cv2', 'Currículo 2'),
             ('facebook', 'Facebook'),
             ('description', 'Descrição'),
+            ('essay', 'Motivação'),
         ])
         res = OrderedDict()
         for ex in exclude:

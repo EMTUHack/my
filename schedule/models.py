@@ -24,7 +24,7 @@ class Event(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=300)
     starts = models.DateTimeField()
-    ends = models.DateTimeField()
+    place = models.CharField(max_length=30, null=True)
     kind = models.CharField(max_length=30, choices=EVENT_TYPES)
     requires_registration = models.BooleanField(default=False)
 
@@ -36,7 +36,7 @@ class Event(models.Model):
     @property
     def is_past(self):
         now = timezone.now()
-        return self.starts.astimezone(pytz.utc) < now.astimezone(pytz.utc)
+        return self.starts < now
 
     @property
     def hackers(self):
@@ -44,8 +44,12 @@ class Event(models.Model):
 
     @property
     def human_time(self):
-        now = timezone.localtime(timezone.now())
-        return self.starts.astimezone(now.tzinfo).strftime('%a, %H:%M')
+        tz = pytz.timezone('America/Sao_Paulo')
+        import locale
+        locale.setlocale(locale.LC_TIME, "pt_BR")
+        resp = str(self.starts.astimezone(tz).strftime('%a, %H:%M'))
+        locale.setlocale(locale.LC_TIME, "en_US")
+        return resp
 
     def is_hacker_registered(self, hacker):
         return self.attendees.filter(hacker=hacker).exists()
@@ -97,11 +101,3 @@ class Attendee(models.Model):
     event = models.ForeignKey(Event, related_name='attendees')
     rating = models.IntegerField(blank=True, null=True)
     feedback = models.CharField(max_length=200, blank=True, null=True, default="")
-
-
-@receiver(pre_save, sender=Event, dispatch_uid="pre_save_event")
-def pre_save_event(sender, instance, **kwargs):
-    now = timezone.localtime(timezone.now())
-    instance.starts = instance.starts.replace(tzinfo=now.tzinfo)
-    instance.ends = instance.ends.replace(tzinfo=now.tzinfo)
-    now = timezone.localtime(timezone.now())

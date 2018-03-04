@@ -6,7 +6,11 @@ from requests.exceptions import HTTPError
 
 if settings.MAILCHIMP_USER is None:
     client = None
-client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_SECRET)
+client = MailChimp(settings.MAILCHIMP_SECRET, settings.MAILCHIMP_USER)
+
+
+def use_mailchimp():
+    return settings.USE_MAILCHIMP
 
 
 def md5(email):
@@ -14,7 +18,7 @@ def md5(email):
 
 
 def add_subscriber(l, hacker):
-    if l is None:
+    if l is None or not use_mailchimp():
         return
     merge_fields = {
         'FNAME': hacker.first_name,
@@ -28,7 +32,7 @@ def add_subscriber(l, hacker):
 
 
 def remove_subscriber(l, hacker):
-    if l is None:
+    if l is None or not use_mailchimp():
         return
     hash_email = md5(hacker.email)
     try:
@@ -38,6 +42,8 @@ def remove_subscriber(l, hacker):
 
 
 def batch_confirm(hackers):
+    if not use_mailchimp():
+        return
     for h in hackers:
         remove_subscriber(settings.MAILCHIMP_LIST_PRE, h)
         add_subscriber(settings.MAILCHIMP_LIST_CONFIRMED, h)

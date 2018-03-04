@@ -1,0 +1,362 @@
+{% extends "main/base.html" %}
+{% load staticfiles %}
+{% block sidebar %}
+{% include 'main/sidebar.html' %}
+{% endblock %}
+{% block extend_scripts %}
+<script src="{% static 'main/js/sweetalert/sweetalert.min.js' %}"></script>
+<script src="{% static 'main/js/sidebar.js' %}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'main/js/hacker_management.js' %}"></script>
+{% endblock %}
+{% block extend_style %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+<style type="text/css">
+.ui.header {
+    margin-bottom: 0px;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="content">
+    <div class="container">
+        <div id="team" class="page">
+            <div class="divided title">
+                Gerenciamento de Hackers
+            </div>
+            <div class="ui stackable centered page grid">
+                <div class="ui five item stackable tabs menu">
+                    <a class="item active" data-tab="first">Pendentes</a>
+                    <a class="item" data-tab="second">Aprovados</a>
+                    <a class="item" data-tab="third">Recusados</a>
+                    <a class="item" data-tab="fourth">Fila de Espera</a>
+                    <a class="item" data-tab="fifth">Presentes</a>
+                </div>
+                <div style="text-align: left;" class="ui bottom attached tab segment active" data-tab="first">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="title">
+                                Aplicações Pendentes
+                            </div>
+                            <br>
+                            <table id="pending_hackers" class="ui celled table cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                        <th style="display:none;">DT</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                        <th style="display:none;">DT</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: left;" class="ui bottom attached tab segment" data-tab="second">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="title">
+                                Hackers Aprovados
+                            </div>
+                            <br>
+                            <table id="admitted_hackers" class="ui celled table cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: left;" class="ui bottom attached tab segment" data-tab="third">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="title">
+                                Hackers Recusados
+                            </div>
+                            <br>
+                            <table id="declined_hackers" class="ui celled table cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: left;" class="ui bottom attached tab segment" data-tab="fourth">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="title">
+                                Hackers na Fila de Espera
+                            </div>
+                            <br>
+                            <table id="waitlist_hackers" class="ui celled table cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                        <th style="display:none;">ID</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                        <th style="display:none;">ID</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: left;" class="ui bottom attached tab segment" data-tab="fifth">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="title">
+                                Hackers Presentes
+                            </div>
+                            <br>
+                            <table id="checkedin_hackers" class="ui celled table cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Uni</th>
+                                        <th>Ano</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ui modal">
+    <i class="close icon"></i>
+    <div id="hacker_name" class="header">
+    </div>
+    <div class="scrolling content">
+        <div class="ui form">
+            <div class="title">
+                Informações Básicas
+            </div>
+        </div>
+        <br>
+        <div class="ui three column stackable centered page grid">
+            <div class="row">
+                <div class="column center aligned">
+                    <h4 class="ui header">Email</h4>
+                    <p id="hacker_email"></p>
+                </div>
+                <div class="column center aligned">
+                    <h4 class="ui header">Telefone</h4>
+                    <p id="hacker_phone"></p>
+                </div>
+                <div class="column center aligned">
+                    <h4 class="ui header">Gênero</h4>
+                    <p id="hacker_gender"></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column center aligned">
+                    <h4 class="ui header">Idade</h4>
+                    <p id="hacker_age"></p>
+                </div>
+                <div class="column center aligned">
+                    <h4 class="ui header">Universidade</h4>
+                    <p id="hacker_university"></p>
+                </div>
+                <div class="column center aligned">
+                    <h4 class="ui header">Ano</h4>
+                    <p id="hacker_enroll_year"></p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="ui divider"></div>
+        <br>
+        <div class="ui form">
+            <div class="title">
+                Logística
+            </div>
+        </div>
+        <br>
+        <div class="ui stackable centered page grid">
+            <div class="row two column">
+                <div class="eight wide column center aligned">
+                    <h4 class="ui header">Tamanho da Camisa</h4>
+                    <p id="hacker_shirt_size"></p>
+                    <h4 class="ui header">Tipo de Camisa</h4>
+                    <p id="hacker_shirt_style"></p>
+
+                </div>
+                <div class="eight wide column center aligned">
+                    <h4 class="ui header">Necessidades Especiais</h4>
+                    <p id="hacker_special_needs"></p>
+                    <h4 class="ui header">Dieta</h4>
+                    <p id="hacker_diet"></p>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <div class="ui divider"></div>
+        <br>
+        <div class="ui form">
+            <div class="title">
+                Currículo
+            </div>
+        </div>
+        <br>
+        <div class="ui stackable centered page grid">
+            <div class="row two column">
+                <div class="eight wide column center aligned">
+                    <h4 class="ui header">Tipo de Currículo</h4>
+                    <p id="hacker_cv_type"></p>
+                    <h4 class="ui header">URL</h4>
+                    <p id="hacker_cv"></p>
+
+                </div>
+                <div id="has_other_cv" class="eight wide column center aligned">
+                    <h4 class="ui header">Outro Currículo</h4>
+                    <p id="hacker_cv2_type"></p>
+                    <h4 class="ui header">URL</h4>
+                    <p id="hacker_cv2"></p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="ui divider"></div>
+        <br>
+        <div class="ui form">
+            <div class="title">
+                Extra
+            </div>
+        </div>
+        <br>
+        <div class="ui stackable centered page grid">
+            <div class="row column">
+                <div class="sixteen center aligned wide column">
+                    <h4 class="ui header">Descrição</h4>
+                    <p id="hacker_description"></p>
+                </div>
+            </div>
+            <div class="row column">
+                <div class="sixteen center aligned wide column">
+                    <h4 class="ui header">Motivação</h4>
+                    <p id="hacker_essay"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="pending_actions" class="actions">
+        <div class="ui red deny right labeled icon button">
+            Rejeitar
+            <i class="exclamation icon"></i>
+        </div>
+        <div class="ui positive right labeled icon button">
+            Aprovar
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+    <div id="admitted_actions" class="actions">
+        <div class="ui red deny right labeled icon button">
+            Rejeitar
+            <i class="exclamation icon"></i>
+        </div>
+    </div>
+    <div id="declined_actions" class="actions">
+        <div class="ui positive right labeled icon button">
+            Aprovar
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+    <div id="waitlist_actions" class="actions">
+        <div class="ui positive right labeled icon button">
+            Tirar da fila
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var csrf = "{{ csrf_token }}";
+    var get_hacker_application_url = "{% url 'main:get_hacker_application' %}";
+    var admit_hacker_url = "{% url 'main:admit_hacker' %}";
+    var decline_hacker_url = "{% url 'main:decline_hacker' %}";
+    var unwaitlist_hacker_url = "{% url 'main:unwaitlist_hacker' %}";
+    var fetch_submitted_hackers_url = "{% url 'main:fetch_submitted_hackers' %}";
+    var fetch_admitted_hackers_url = "{% url 'main:fetch_admitted_hackers' %}";
+    var fetch_declined_hackers_url = "{% url 'main:fetch_declined_hackers' %}";
+    var fetch_waitlist_hackers_url = "{% url 'main:fetch_waitlist_hackers' %}";
+    var fetch_checkedin_hackers_url = "{% url 'main:fetch_checkedin_hackers' %}";
+</script>
+{% endblock %}

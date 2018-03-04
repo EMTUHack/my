@@ -5,7 +5,7 @@
     <style type="text/css">
     {% include 'main/email/basic/style.css' %}
 </style>
-<title>{{ subject }}</title>
+<title>{{ title }}</title>
 </head>
 <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
     <center>
@@ -35,7 +35,7 @@
                                         <td valign="top" style="text-align: center" class="bodyContent" mc:edit="body_content00">
                                             <h1>{{ title }}</h1>
                                             <h3>{{ subtitle }}</h3>
-                                            {{ body | safe }}
+                                            {{ description | safe }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -57,7 +57,7 @@
                                 <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateFooter">
                                     <tr>
                                         <td valign="top" class="footerContent" mc:edit="footer_content00">
-                                            <a href="https://twitter.com/{{ twitterHandle }}">Siga no Twitter</a>&nbsp;&nbsp;&nbsp;<a href="https://facebook.com/{{ facebookHandle }}">Curta no Facebook</a>&nbsp;&nbsp;&nbsp;
+                                            <a href="{{ project_url }}">Nosso site</a>&nbsp;&nbsp;&nbsp;<a href="https://facebook.com/{{ facebookHandle }}">Curta no Facebook</a>&nbsp;&nbsp;&nbsp;
                                         </td>
                                     </tr>
                                     <tr>

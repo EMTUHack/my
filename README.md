@@ -28,6 +28,11 @@ Create a superuser
 python manage.py createsuperuser
 ```
 
+Compile the SCSS
+```
+python manage.py compilescss
+```
+
 Start your server
 ```
 python manage.py runserver

@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^dashboard$', views.dashboard, name='dashboard'),
     url(r'^team$', views.team, name='team'),
     url(r'^godmode/$', views.admin, name='admin'),
+    url(r'^godmode/hackers$', views.manage_hackers, name='manage_hackers'),
     url(r'^godmode/stats$', views.stats, name='stats'),
     url(r'^godmode/checkin$', views.checkin, name='checkin'),
     url(r'^godmode/export/basic$', views.export_basic_info, name='export_basic_info'),
@@ -45,6 +46,7 @@ urlpatterns = [
     url(r'^godmode/export/teams$', views.export_teams, name='export_teams'),
     url(r'^godmode/export/teams_after$', views.export_teams_after, name='export_teams_after'),
     url(r'^godmode/export/staff$', views.export_staff, name='export_staff'),
+    url(r'^godmode/export/events$', views.export_events, name='export_events'),
     url(r'^godmode/error$', views.test_error, name='test_error'),
 
     url(r'^godmode/batch_confirm$', h_views.batch_confirm_hackers, name='batch_confirm'),

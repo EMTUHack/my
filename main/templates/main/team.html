@@ -16,9 +16,10 @@
             </div>
             <div class="ui stackable centered page grid">
                 <div class="column">
-                    {% if user.hacker.has_team %}
-                    <div class="header title small"><b>Prazo para submissão de projeto e local: Domingo - 10:00</b></div>
-                    {% endif %}
+
+                    <div class="header title small">
+                        <b>Prazo para submissão de projeto e local: {{ hack_settings.hackathon_start|date:'l - H:i' }}</b>
+                    </div>
                     <div style="display: none;" id="team_error" class="ui error message">
                     </div>
                     <div class="ui segment">

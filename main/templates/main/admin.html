@@ -7,6 +7,13 @@
 <script src="{% static 'main/js/sweetalert/sweetalert.min.js' %}"></script>
 <script src="{% static 'main/js/sidebar.js' %}"></script>
 <script src="{% static 'main/js/admin.js' %}"></script>
+<script src="https://cdn.rawgit.com/mdehoog/Semantic-UI-Calendar/76959c6f7d33a527b49be76789e984a0a407350b/dist/calendar.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+{% endblock %}
+{% block extend_style %}
+<link href="https://cdn.rawgit.com/mdehoog/Semantic-UI-Calendar/76959c6f7d33a527b49be76789e984a0a407350b/dist/calendar.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
 {% endblock %}
 {% block content %}
 <div class="content">
@@ -16,43 +23,120 @@
                 Admin
             </div>
             <div class="ui stackable centered page grid">
-                <div class="column">
-                    <div style="display: none;" id="team_error" class="ui error message">
-                    </div>
-                    <div class="ui segment">
-                        <div id="anchor">
-                            <div class="ui form">
-                                <div class="form">
-                                    <div class="title">
-                                        Importar hackers:
+                <div class="ui six item stackable tabs menu">
+                    <a class="item active" data-tab="first">Configurações</a>
+                    <a class="item" data-tab="second">Importar Hackers</a>
+                    <a class="item" data-tab="third">Importar Staff</a>
+                    <a class="item" data-tab="fourth">Exportações</a>
+                    <a class="item" data-tab="fifth">Pós Evento</a>
+                    <a class="item" data-tab="sixth">Schedule</a>
+                </div>
+                <div class="ui bottom attached tab segment active" data-tab="first">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="title">
+                                Configurações
+                            </div>
+                            <br>
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Abertura das Inscrições</label>
+                                    <div class="ui calendar" id="regopen">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text" placeholder="Start">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <br />
-                                    <textarea id="batch_hackers" placeholder="Cole o conteúdo do CSV aqui" rows="5"></textarea>
+                                    <label>Fim das Inscrições</label>
+                                    <div class="ui calendar" id="regclose">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text" placeholder="End">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div style="display: none;" id="batch_anchor" class="ui accordion">
-                                    <div class="title">
-                                        <i class="dropdown icon"></i>
-                                        <span id="batch_title_1"></span>
+                                <div class="field">
+                                    <label>Prazo de Confirmação</label>
+                                    <div class="ui calendar" id="confby">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text" placeholder="Start">
+                                        </div>
                                     </div>
-                                    <div id="batch_content_1" class="content">
-                                        <p class="transition hidden"></p>
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Início do Hackathon</label>
+                                    <div class="ui calendar" id="hackstart">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text" placeholder="Start">
+                                        </div>
                                     </div>
-                                    <div class="title">
-                                        <i class="dropdown icon"></i>
-                                        <span id="batch_title_2"></span>
+                                </div>
+                                <div class="field">
+                                    <label>Fim do Hackathon</label>
+                                    <div class="ui calendar" id="hackend">
+                                        <div class="ui input left icon">
+                                            <i class="calendar icon"></i>
+                                            <input type="text" placeholder="End">
+                                        </div>
                                     </div>
-                                    <div id="batch_content_2" class="content">
-                                        <p class="transition hidden"></p>
+                                </div>
+                                <div class="field">
+                                    <label>Máximo de Participantes</label>
+                                    <div class="ui input">
+                                        <input id="max_hackers" type="number" value="{{ hack_settings.max_hackers }}" placeholder="Número de Hackers">
                                     </div>
-                                    <div class="title">
-                                        <i class="dropdown icon"></i>
-                                        <span id="batch_title_3"></span>
-                                    </div>
-                                    <div id="batch_content_3" class="content">
-                                        <p class="transition hidden"></p>
-                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="ui divider"></div>
+                            <div class="title">
+                                Ações
+                            </div>
+                            <br>
+                            <a href="{% url 'main:manual_cycle_waitlist' %}" class="ui green button">
+                                Rodar lista de espera
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="second">
+                    <div class="column">
+
+                        <div class="ui form">
+                            <div class="title">
+                                Importar hackers:
+                            </div>
+                            <div class="field">
+                                <br />
+                                <textarea id="batch_hackers" placeholder="Cole o conteúdo do CSV aqui" rows="5"></textarea>
+                            </div>
+                            <div style="display: none;" id="batch_anchor" class="ui accordion">
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    <span id="batch_title_1"></span>
+                                </div>
+                                <div id="batch_content_1" class="content">
+                                    <p class="transition hidden"></p>
+                                </div>
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    <span id="batch_title_2"></span>
+                                </div>
+                                <div id="batch_content_2" class="content">
+                                    <p class="transition hidden"></p>
+                                </div>
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    <span id="batch_title_3"></span>
+                                </div>
+                                <div id="batch_content_3" class="content">
+                                    <p class="transition hidden"></p>
                                 </div>
                             </div>
                             <br />
@@ -60,39 +144,39 @@
 
                             <button class="ui fluid green button" type="button" onclick="import_hackers()"><i class="ui icon upload"></i> Submeter</button>
                         </div>
-                        <div class="ui divider"></div>
+                    </div>
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="third">
+                    <div class="column">
                         <div class="ui form">
-                                <div class="form">
-                                    <div class="title">
-                                        Importar Staff:
-                                    </div>
+                            <div class="title">
+                                Importar Staff:
+                            </div>
+                            <div class="field">
+                                <br />
+                                <textarea id="batch_staff" placeholder="Cole o conteúdo do CSV aqui" rows="5"></textarea>
+                            </div>
+                            <div style="display: none;" id="batch_anchor_staff" class="ui accordion">
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    <span id="batch_title_1_staff"></span>
                                 </div>
-                                <div class="field">
-                                    <br />
-                                    <textarea id="batch_staff" placeholder="Cole o conteúdo do CSV aqui" rows="5"></textarea>
+                                <div id="batch_content_1_staff" class="content">
+                                    <p class="transition hidden"></p>
                                 </div>
-                                <div style="display: none;" id="batch_anchor_staff" class="ui accordion">
-                                    <div class="title">
-                                        <i class="dropdown icon"></i>
-                                        <span id="batch_title_1_staff"></span>
-                                    </div>
-                                    <div id="batch_content_1_staff" class="content">
-                                        <p class="transition hidden"></p>
-                                    </div>
-                                    <div class="title">
-                                        <i class="dropdown icon"></i>
-                                        <span id="batch_title_2_staff"></span>
-                                    </div>
-                                    <div id="batch_content_2_staff" class="content">
-                                        <p class="transition hidden"></p>
-                                    </div>
-                                    <div class="title">
-                                        <i class="dropdown icon"></i>
-                                        <span id="batch_title_3_staff"></span>
-                                    </div>
-                                    <div id="batch_content_3_staff" class="content">
-                                        <p class="transition hidden"></p>
-                                    </div>
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    <span id="batch_title_2_staff"></span>
+                                </div>
+                                <div id="batch_content_2_staff" class="content">
+                                    <p class="transition hidden"></p>
+                                </div>
+                                <div class="title">
+                                    <i class="dropdown icon"></i>
+                                    <span id="batch_title_3_staff"></span>
+                                </div>
+                                <div id="batch_content_3_staff" class="content">
+                                    <p class="transition hidden"></p>
                                 </div>
                             </div>
                             <br />
@@ -100,7 +184,10 @@
 
                             <button class="ui fluid green button" type="button" onclick="import_staff()"><i class="ui icon upload"></i>Submeter</button>
                         </div>
-                        <div class="ui divider"></div>
+                    </div>
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="fourth">
+                    <div class="column">
                         <div class="ui form">
                             <div class="title">
                                 Exportar Coisas:
@@ -118,7 +205,10 @@
                             <br />
                             <a href="{% url 'export_staff' %}" class="ui fluid orange button">Staff</a>
                         </div>
-                        <div class="ui divider"></div>
+                    </div>
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="fifth">
+                    <div class="column">
                         <div class="ui form">
                             <div class="title">
                                 Pós Evento:
@@ -127,10 +217,221 @@
                             <a href="{% url 'export_advanced_checkedin_info' %}" class="ui fluid green button">Hackers que atenderam</a>
                             <br />
                             <a href="{% url 'export_teams_after' %}" class="ui fluid green button">Equipes finalizadas</a>
+                            <br />
+                            <a href="{% url 'export_events' %}" class="ui fluid blue button">Eventos</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui bottom attached tab segment" data-tab="sixth">
+                    <div class="column">
+                        <form id="new_event_form" method="post" action="{% url 'schedule:create_or_edit_event' %}#/sixth" style="text-align: left;" class="ui form">
+                            {% csrf_token %}
+                            <div class="title">
+                                Criar evento
+                            </div>
+                            <h4 class="ui dividing header">Informações básicas</h4>
+                            <div class="field">
+                                <div class="two fields">
+                                    <div class="field">
+                                        <label>Título*</label>
+                                        <input required type="text" name="name" placeholder="Palestra sobre Bitcoin">
+                                    </div>
+                                    <div class="field">
+                                        <label>Local*</label>
+                                        <div class="field">
+                                            <input required type="text" name="place" placeholder="Palestra sobre Bitcoin">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="three fields">
+                                    <div class="field">
+                                        <label>Início*</label>
+                                        <div class="ui calendar" id="event_create_start">
+                                            <div class="ui input left icon">
+                                                <i class="calendar icon"></i>
+                                                <input required id="event_create_start_val" type="text" name="starts" placeholder="Início">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label>Tipo*</label>
+                                        <div class="ui selection dropdown">
+                                            <input value="Workshop" required type="hidden" name="kind">
+                                            <i class="dropdown icon"></i>
+                                            <div class="default text">Tipo de evento</div>
+                                            <div class="menu">
+                                                <div class="item" data-value="Workshop">Workshop</div>
+                                                <div class="item" data-value="Palestra">Palestra</div>
+                                                <div class="item" data-value="Tech Talk">Tech Talk</div>
+                                                <div class="item" data-value="Refeição">Refeição</div>
+                                                <div class="item" data-value="Meta">Meta Evento</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label>Requer registro</label>
+                                        <div class="ui toggle checkbox">
+                                            <input type="checkbox" checked="checked" name="requires_registration" tabindex="0" class="hidden">
+                                            <label></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Descrição*</label>
+                                <textarea required name="description" placeholder="Vamos aprender sobre como bitcoins e blockchains funcionam" rows="2"></textarea>
+                            </div>
+                            <div id="event_create_attendees_max">
+                                <h4 class="ui dividing header">Participantes</h4>
+                                <div class="field">
+                                    <label>Número máximo de participantes*</label>
+                                    <input required type="number" name="max_attendees" placeholder="42">
+                                </div>
+                            </div>
+                            <br>
+                            <div id="event_create_speaker_info">
+                                <h4 class="ui dividing header">Informações do Palestrante</h4>
+                                <div class="field">
+                                    <label>Nome*</label>
+                                    <input type="text" name="speaker" placeholder="Satoshi Nakamoto">
+                                </div>
+                                <div class="field">
+                                    <label>Descrição do Palestrante</label>
+                                    <textarea name="speaker_description" placeholder="Criador do Bitcoin" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <br>
+                            <button onclick="submit_new_event()" class="ui green button">Criar Evento</button>
+                        </form>
+                        <div class="ui form">
+                            <div class="title">
+                                Cronograma de eventos
+                            </div>
+                            <br />
+                            <div class="column">
+                                <div class="ui form">
+                                    <table id="schedule_table" class="ui celled table cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Hora</th>
+                                                <th>Local</th>
+                                                <th>Tipo</th>
+                                                <th>Editar</th>
+                                                <th>Apagar</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Hora</th>
+                                                <th>Local</th>
+                                                <th>Tipo</th>
+                                                <th>Editar</th>
+                                                <th>Apagar</th>
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div id="edit_event" class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        Editar evento
+    </div>
+    <div class=" content">
+        <div class="ui form">
+            <h4 class="ui dividing header">Informações básicas</h4>
+            <div class="field">
+                <div class="two fields">
+                    <div class="field">
+                        <label>Título*</label>
+                        <input id="edit_event_name" required type="text" name="name" placeholder="Palestra sobre Bitcoin">
+                    </div>
+                    <div class="field">
+                        <label>Local*</label>
+                        <div class="field">
+                            <input id="edit_event_place" required type="text" name="place" placeholder="Palestra sobre Bitcoin">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <div class="three fields">
+                    <div class="field">
+                        <label>Início*</label>
+                        <div class="ui calendar" id="edit_event_create_start">
+                            <div class="ui input left icon">
+                                <i class="calendar icon"></i>
+                                <input required id="edit_event_create_start_val" type="text" name="starts" placeholder="Início">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Tipo*</label>
+                        <div id="edit_event_kind" class="mod ui selection dropdown">
+                            <input value="Workshop" required type="hidden" name="kind">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Tipo de evento</div>
+                            <div class="menu">
+                                <div class="item" data-value="Workshop">Workshop</div>
+                                <div class="item" data-value="Palestra">Palestra</div>
+                                <div class="item" data-value="Tech Talk">Tech Talk</div>
+                                <div class="item" data-value="Refeição">Refeição</div>
+                                <div class="item" data-value="Meta">Meta Evento</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Requer registro</label>
+                        <div class="mod ui toggle checkbox">
+                            <input id="edit_event_requires_registration" type="checkbox" checked="checked" name="requires_registration" tabindex="0" class="hidden">
+                            <label></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label>Descrição*</label>
+                <textarea id="edit_event_description" required name="description" placeholder="Vamos aprender sobre como bitcoins e blockchains funcionam" rows="2"></textarea>
+            </div>
+            <div id="edit_event_create_attendees_max">
+                <h4 class="ui dividing header">Participantes</h4>
+                <div class="field">
+                    <label>Número máximo de participantes*</label>
+                    <input id="edit_event_max_attendees" required type="number" name="max_attendees" placeholder="42">
+                </div>
+            </div>
+            <br>
+            <div id="edit_event_create_speaker_info">
+                <h4 class="ui dividing header">Informações do Palestrante</h4>
+                <div class="field">
+                    <label>Nome*</label>
+                    <input id="edit_event_speaker" type="text" name="speaker" placeholder="Satoshi Nakamoto">
+                </div>
+                <div class="field">
+                    <label>Descrição do Palestrante</label>
+                    <textarea id="edit_event_speaker_description" name="speaker_description" placeholder="Criador do Bitcoin" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui positive right labeled icon button">
+            Salvar alterações
+            <i class="checkmark icon"></i>
         </div>
     </div>
 </div>
@@ -142,6 +443,170 @@
     var search_hackers_url = "{% url 'hackers:search_hackers' %}";
     var check_in_hacker_url = "{% url 'hackers:check_in_hacker' %}";
     var get_hacker_check_in_url = "{% url 'hackers:get_hacker_check_in' %}";
+
+    var registration_open_url = "{% url 'main:registration_open' %}";
+    var registration_close_url = "{% url 'main:registration_close' %}";
+    var confirm_by_url = "{% url 'main:confirm_by' %}";
+    var hackathon_start_url = "{% url 'main:hackathon_start' %}";
+    var hackathon_end_url = "{% url 'main:hackathon_end' %}";
+    var max_hackers_url = "{% url 'main:max_hackers' %}";
+    var fetch_schedule_simple_url = "{% url 'schedule:fetch_schedule_simple' %}";
+    var fetch_schedule_full_url = "{% url 'schedule:fetch_schedule_full' %}";
+    var delete_event_url = "{% url 'schedule:delete_event' %}";
+    var create_or_edit_event_url = "{% url 'schedule:create_or_edit_event' %}";
+
+    var regopen_date = new Date({{ hack_settings.registration_open_seconds }});
+    var regclose_date = new Date({{ hack_settings.registration_close_seconds }});
+    var confby_date = new Date({{ hack_settings.confirmation_seconds }});
+    var hackstart_date = new Date({{ hack_settings.hackathon_start_seconds }});
+    var hackend_date = new Date({{ hack_settings.hackathon_end_seconds }});
+    var max_hackers = {{ hack_settings.max_hackers }};
+
     $('.ui.accordion').accordion();
+    $('.ui.checkbox').checkbox({
+        onChecked: function(argument) {
+            $("#event_create_attendees_max").show();
+            $("#event_create_attendees_max input").prop('required', true);
+        },
+        onUnchecked: function(argument) {
+            $("#event_create_attendees_max").hide();
+            $("#event_create_attendees_max input").prop('required', false);
+        }
+    });
+    $('.dropdown').dropdown({
+        onChange: function(value, text, choice) {
+            if (value == 'Meta' || value == 'Refeição')
+            {
+                $("#event_create_speaker_info").hide();
+                $("#event_create_speaker_info input").prop('required', false);
+            }
+            else {
+                $("#event_create_speaker_info").show();
+                $("#event_create_speaker_info input").prop('required', true);
+            }
+        }
+    });
+    $('.mod.ui.checkbox').checkbox({
+        onChecked: function(argument) {
+            $("#edit_event_create_attendees_max").show();
+            $("#edit_event_create_attendees_max input").prop('required', true);
+        },
+        onUnchecked: function(argument) {
+            $("#edit_event_create_attendees_max").hide();
+            $("#edit_event_create_attendees_max input").prop('required', false);
+        }
+    });
+    $('.mod.dropdown').dropdown({
+        onChange: function(value, text, choice) {
+            if (value == 'Meta' || value == 'Refeição')
+            {
+                $("#edit_event_create_speaker_info").hide();
+                $("#edit_event_create_speaker_info input").prop('required', false);
+            }
+            else {
+                $("#edit_event_create_speaker_info").show();
+                $("#edit_event_create_speaker_info input").prop('required', true);
+            }
+        }
+    });
+    $('.ui.accordion').accordion();
+    $('.menu .item').tab({
+        history : true,
+        context : '.centered.page'
+    });
+    function submit_new_event() {
+        $('#new_event_form').submit(function() {
+            $("#event_create_start_val").val($("#event_create_start").calendar('get date').toGMTString());
+            $("#event_create_end_val").val($("#event_create_end").calendar('get date').toGMTString());
+            return true;
+        });
+    };
+    function edit_event(event) {
+        console.log(event);
+        $.ajax(
+        {
+            url: create_or_edit_event_url,
+            type: 'post',
+            data: {
+                event_id: event.event_id,
+                name: event.name,
+                description: event.description,
+                starts: event.starts,
+                place: event.place,
+                kind: event.kind,
+                requires_registration: event.requires_registration,
+                speaker: event.speaker,
+                speaker_description: event.speaker_description,
+                max_attendees: event.max_attendees,
+                csrfmiddlewaretoken: csrf
+            },
+            success: function(data) {
+                $('#schedule_table').DataTable().ajax.reload();
+            }
+        })
+    };
+    function show_edit_event(event) {
+        $.ajax(
+        {
+            url: fetch_schedule_full_url,
+            type: 'post',
+            data: {
+                event_id: event,
+                csrfmiddlewaretoken: csrf
+            },
+            success: function(data) {
+                $("#edit_event_name").val(data['name']);
+                $("#edit_event_description").val(data['description']);
+                $("#edit_event_place").val(data['place']);
+                $("#edit_event_kind").dropdown('set selected', data['kind']);
+                $("#edit_event_kind").dropdown('set value', data['kind']);
+                $("#edit_event_speaker").val(data['speaker']);
+                $("#edit_event_speaker_description").val(data['speaker_description']);
+                $("#edit_event_max_attendees").val(data['max_attendees']);
+                date = new Date(data['starts']);
+                $('#edit_event_create_start').calendar('set date', date);
+                if (data['requires_registration'] == true)
+                    $('.mod.ui.checkbox').checkbox('set checked');
+                else
+                    $('.mod.ui.checkbox').checkbox('set unchecked');
+                $('.ui.modal').modal({
+                    'onApprove': function() {
+                        var d = {
+                            'event_id': event,
+                            'name': $("#edit_event_name").val(),
+                            'description': $("#edit_event_description").val(),
+                            'place': $("#edit_event_place").val(),
+                            'kind': $("#edit_event_kind").dropdown('get value'),
+                            'speaker': $("#edit_event_speaker").val(),
+                            'speaker_description': $("#edit_event_speaker_description").val(),
+                            'max_attendees': $("#edit_event_max_attendees").val(),
+                            'starts': $("#edit_event_create_start").calendar('get date').toGMTString(),
+                            'requires_registration': $('.mod.ui.checkbox').checkbox('is checked')
+                        }
+                        edit_event(d);
+                    },
+                });
+                $("#edit_event").modal('show');
+                $('#edit_event_create_start').calendar({
+                    ampm: false
+                });
+            }
+        })
+    };
+    function delete_event(id) {
+        $.ajax(
+        {
+            url: delete_event_url,
+            type: 'post',
+            data: {
+                event_id: id,
+                csrfmiddlewaretoken: csrf
+            },
+            success: function(data) {
+                $('#schedule_table').DataTable().ajax.reload();
+            }
+        })
+    }
 </script>
+<script src="{% static 'main/js/admin.js' %}"></script>
 {% endblock %}

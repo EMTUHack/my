@@ -4,38 +4,49 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
 from django.db.models import Q
 from .models import Hacker
-from .forms import ApplicationForm
+from .forms import ApplicationForm, ApplicationBasicForm
 from django.conf import settings
-from main.decorators import require_condition
-from main.email import notify_checkin, notify_late
+from main.email import notify_checkin
 from main.mailchimp import add_subscriber, remove_subscriber, batch_confirm
+from main.models import Settings
 from .util import proc
 import json
 import io
 # Create your views here.
 
 
-@user_passes_test(lambda u: u.hacker.second_chance or settings.APPLICATION_OPEN)
+@user_passes_test(lambda u: Settings.registration_is_open() and (u.hacker.is_unverified or u.hacker.is_incomplete or u.hacker.is_submitted))
 @login_required
 def application(request):
     app_instance = getattr(request.user.hacker, 'application', None)
     if request.method == 'POST':
         form = ApplicationForm(instance=app_instance, data=request.POST)
-        if form.is_valid():
+        formbasic = ApplicationBasicForm(instance=request.user.hacker, data=request.POST)
+        if form.is_valid() and formbasic.is_valid():
             form.save(hacker=request.user.hacker)
+            formbasic.save()
             messages.add_message(request, messages.SUCCESS, 'Aplicação atualizada!')
             remove_subscriber(settings.MAILCHIMP_LIST_PRE, request.user.hacker)
             add_subscriber(settings.MAILCHIMP_LIST_CONFIRMED, request.user.hacker)
+            return redirect('dashboard')
         else:
             messages.add_message(request, messages.ERROR, 'Aplicação contém erros!')
-            return render(request, 'hackers/application.html', {'form': form, "sbar": "application"})
+            return render(request, 'hackers/application.html', {'form': form, 'formbasic': formbasic, "sbar": "application"})
 
     form = ApplicationForm(instance=app_instance)
-    return render(request, 'hackers/application.html', {'form': form, "sbar": "application"})
+    formbasic = ApplicationBasicForm(instance=request.user.hacker)
+    return render(request, 'hackers/application.html', {'form': form, 'formbasic': formbasic, "sbar": "application"})
 
 
-@require_condition(settings.HACKATHON_STARTED and not settings.HACKATHON_ENDED)
-@user_passes_test(lambda u: u.hacker.is_checkedin)
+@user_passes_test(lambda u: Settings.can_confirm() and u.is_hacker and u.hacker.is_admitted)
+@login_required
+def confirm_presence(request):
+    hacker = request.user.hacker
+    hacker.confirm()
+    return redirect('dashboard')
+
+
+@user_passes_test(lambda u: u.hacker.is_checkedin and Settings.hackathon_is_happening())
 def enter_team(request):
     """Enter Team API
     Returns forbidden if team is full
@@ -55,8 +66,7 @@ def enter_team(request):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
-@require_condition(settings.HACKATHON_STARTED and not settings.HACKATHON_ENDED)
-@user_passes_test(lambda u: u.hacker.is_checkedin)
+@user_passes_test(lambda u: u.hacker.is_checkedin and Settings.hackathon_is_happening())
 def leave_team(request):
     """Leave Team API
     """
@@ -65,8 +75,7 @@ def leave_team(request):
     return HttpResponse()
 
 
-@require_condition(settings.HACKATHON_STARTED and not settings.HACKATHON_ENDED)
-@user_passes_test(lambda u: u.hacker.is_checkedin)
+@user_passes_test(lambda u: u.hacker.is_checkedin and Settings.hackathon_is_happening())
 def update_project(request):
     """Update Project API
     returns forbidden if hacker has no team
@@ -81,8 +90,7 @@ def update_project(request):
     return HttpResponse(json.dumps({"project": hacker.team.project}), content_type="application/json")
 
 
-@require_condition(settings.HACKATHON_STARTED and not settings.HACKATHON_ENDED)
-@user_passes_test(lambda u: u.hacker.is_checkedin)
+@user_passes_test(lambda u: u.hacker.is_checkedin and Settings.hackathon_is_happening())
 def update_location(request):
     """Update Location API
     returns forbidden if hacker has no team
@@ -97,8 +105,7 @@ def update_location(request):
     return HttpResponse(json.dumps({"location": hacker.team.location}), content_type="application/json")
 
 
-@require_condition(settings.HACKATHON_STARTED and not settings.HACKATHON_ENDED)
-@user_passes_test(lambda u: u.hacker.is_checkedin)
+@user_passes_test(lambda u: u.hacker.is_checkedin and Settings.hackathon_is_happening())
 def update_github_url(request):
     """Update Projeto URL API
     returns forbidden if hacker has no team
@@ -113,8 +120,7 @@ def update_github_url(request):
     return HttpResponse(json.dumps({"github_url": hacker.team.github_url}), content_type="application/json")
 
 
-@require_condition(settings.HACKATHON_STARTED and not settings.HACKATHON_ENDED)
-@user_passes_test(lambda u: u.hacker.is_checkedin)
+@user_passes_test(lambda u: u.hacker.is_checkedin and Settings.hackathon_is_happening())
 def update_allow_new_members(request):
     """Update Location API
     returns forbidden if hacker has no team
@@ -154,23 +160,13 @@ def import_hackers(request):
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def search_hacker(request):
     data = request.POST['data']
-    hackers = Hacker.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data) | Q(token__icontains=data)).filter(application__completed=True)[0:10]
+    hackers = Hacker.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data) | Q(token__icontains=data))[0:10]
+    hackers = [hacker for hacker in hackers if hacker.is_confirmed]
     return HttpResponse(json.dumps([[
         hacker.name,
         hacker.email,
         hacker.application.extras,
         '<button class="ui small blue button" type="button" onclick="sweet(\'' + hacker.name + '\', ' + str(hacker.id) + ')">Check-in</button>'
-    ] for hacker in hackers]), content_type="application/json")
-
-
-@user_passes_test(lambda u: u.is_superuser)
-def search_late_hacker(request):
-    data = request.POST['data']
-    hackers = Hacker.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data) | Q(token__icontains=data)).filter(application__completed=False)[0:10]
-    return HttpResponse(json.dumps([[
-        hacker.name,
-        hacker.email,
-        '<button class="ui small blue button" type="button" onclick="sweet_late(\'' + hacker.name + '\', ' + str(hacker.id) + ')">Liberar</button>'
     ] for hacker in hackers]), content_type="application/json")
 
 
@@ -182,19 +178,9 @@ def check_in_hacker(request):
     if not (hacker.is_confirmed or hacker.is_checkedin):
         return HttpResponseForbidden()
     hacker.checked_in = not hacker.checked_in
-    hacker.second_chance = False
     hacker.save()
     hacker.get_azure_pass()
     return HttpResponse(json.dumps({"res": hacker.checked_in, "id": hacker.id}), content_type="application/json")
-
-
-@user_passes_test(lambda u: u.is_superuser)
-def give_second_chance(request):
-    hacker_id = request.POST['id']
-    hacker = get_object_or_404(Hacker, id=hacker_id)
-    hacker.second_chance = not hacker.second_chance
-    hacker.save()
-    return HttpResponse(json.dumps({"res": hacker.second_chance, "id": hacker.id}), content_type="application/json")
 
 
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
@@ -205,13 +191,6 @@ def notify_check_in_hacker(request):
     return HttpResponse()
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def notify_late_hacker(request):
-    hacker = get_object_or_404(Hacker, id=request.POST['id'])
-    notify_late(hacker)
-    return HttpResponse()
-
-
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def get_hacker_check_in(request):
     hacker_id = request.POST['id']
@@ -219,19 +198,17 @@ def get_hacker_check_in(request):
     return HttpResponse(json.dumps({"data": hacker.checked_in}), content_type="application/json")
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def get_hacker_second_chance(request):
-    hacker_id = request.POST['id']
-    hacker = get_object_or_404(Hacker, id=hacker_id)
-    return HttpResponse(json.dumps({"data": hacker.second_chance}), content_type="application/json")
-
-
-@require_condition(settings.APPLICATION_OPEN)
+@user_passes_test(lambda u: Settings.can_confirm())
 @login_required
 def toggle_withdraw(request):
     hacker = request.user.hacker
-    hacker.withdraw = not hacker.withdraw
-    hacker.save()
+    if not hacker.withdraw:
+        hacker.withdraw_from_event()
+    else:
+        hacker.withdraw = False
+        hacker.save()
+        if Settings.hackathon_is_full():
+            hacker.put_on_waitlist()
     return redirect('dashboard')
 
 

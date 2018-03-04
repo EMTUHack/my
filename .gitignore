@@ -4,6 +4,8 @@ azure.csv
 surveys/
 events/
 node_modules/
+dump.rdb
+*.sublime-project
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -61,7 +63,7 @@ coverage.xml
 db.sqlite3
 local_settings.py
 project/staticfiles/
-!project/staticfiles/hithere.txt
+!project/staticfiles/ohhi.txt
 
 # Flask stuff:
 instance/

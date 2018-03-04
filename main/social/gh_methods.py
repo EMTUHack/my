@@ -6,6 +6,7 @@ from hackers.models import Hacker
 from staff.models import Staff
 from django.contrib import messages
 from django.contrib.auth import login
+from main.models import Settings
 
 app_id = settings.GITHUB_KEY
 app_secret = settings.GITHUB_SECRET
@@ -79,21 +80,35 @@ def login_successful(code, request):
 
     # Get the user's scope ID from debug data
     social_id = debug['id']
+    first_name = debug['name'].split(' ')[0]
+    last_name = debug['name'].split(' ')[1:][0] if len(debug['name'].split(' ')) > 1 else ''
+    email = debug['email']
 
     # Save new hacker information
     if request.user.is_authenticated:
         obj = request.user.hacker_or_staff
-        obj.gh_social_id = social_id
-        obj.save()
     else:
         obj = Hacker.objects.filter(gh_social_id=social_id).first() or Staff.objects.filter(gh_social_id=social_id).first()
+        if obj is None:
+            obj = Hacker.objects.filter(email=email).first() or Staff.objects.filter(email=email).first()
+
+    if obj is None:
+        if not Settings.registration_is_open():
+            messages.add_message(request, messages.ERROR, 'Inscrições estão fechadas!')
+            return request
+        obj = Hacker()
+
+    obj.gh_social_id = social_id
+    obj.first_name = obj.first_name if getattr(obj, 'first_name', '') else first_name
+    obj.last_name = obj.last_name if getattr(obj, 'last_name', '') else last_name
+    obj.email = obj.email if getattr(obj, 'email', '') else email
+    obj.save()
 
     # Try to login the user
     if obj is None:
         messages.add_message(request, messages.ERROR, 'Você precisa estar inscrito(a) para entrar!')
     else:
         login(request, obj.user)
-        messages.add_message(request, messages.SUCCESS, 'Olá, ' + obj.first_name + '!')
 
     return request
 

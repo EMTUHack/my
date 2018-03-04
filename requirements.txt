@@ -10,3 +10,5 @@ django-sass-processor
 requests
 mailchimp3
 pytz
+redis
+celery
