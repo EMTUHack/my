@@ -48,7 +48,7 @@ def verify_email(hacker):
     msg_html = render_to_string('main/email/action/html.html', context)
 
     send_mail(
-        '[{}] Verificar Email'.format(hack_name),
+        '[{}] Verificar email'.format(hack_name),
         msg_plain,
         fr,
         [to],
