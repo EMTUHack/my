@@ -1,6 +1,7 @@
 from django import forms
 from .models import Application, Hacker
 from .tasks import send_verify_email
+from django.conf import settings
 
 
 class ApplicationBasicForm(forms.ModelForm):
@@ -25,10 +26,10 @@ class ApplicationBasicForm(forms.ModelForm):
         if instance.email != pre_instance.email:
             instance.unverified = True
         if commit:
+            instance.save()
             if instance.unverified:
                 instance.new_verification_code()
-            instance.save()
-            send_verify_email.delay(instance.id)
+                send_verify_email.delay(instance.id)
         return instance
 
 
@@ -51,14 +52,14 @@ class ApplicationForm(forms.ModelForm):
             'shirt_size': 'Tamanho da Camisa*',
             'shirt_style': 'Estilo da Camisa*',
             'cv_type': 'Tipo de Currículo*',
-            'cv': 'Currículo (Válido)* <a id="why">Por quê?</a>',
+            'cv': 'URL do Currículo (Válido)* <a id="why">Por quê?</a>',
             'cv2_type': 'Outro tipo de Currículo',
-            'cv2': 'Outro Currículo',
+            'cv2': 'URL de outro Currículo',
             'facebook': 'facebook.com/',
             'sleeping_bag': '<div style="color: gray;" id="sleeping" ><i class="ui icon external share"></i>Saco de Dormir(R$ 40)</div>',
             'pillow': '<div style="color: gray;" id="pillow"><i class="ui icon external share"></i>Travesseiro(R$ 35)</div>',
             'description': 'Eu me descreveria como...*',
-            'essay': 'Por que você quer participar do Hack the Campus?',
+            'essay': 'Por que você quer participar do {}?'.format(settings.HACKATHON_NAME),
         }
 
         widgets = {

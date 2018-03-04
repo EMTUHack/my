@@ -27,6 +27,11 @@ def index(request):
     if len(Settings.objects.all()) == 0:
         Settings().save()
     if request.user.is_authenticated:
+        # Activate hackers on login
+        obj = request.user.hacker_or_staff
+        if not obj.active:
+            obj.active = True
+            obj.save()
         return redirect("dashboard")
     return render(request, 'main/login.html')
 
@@ -40,7 +45,7 @@ def login_from_token(request, token="42"):
 
     if hacker_or_staff.user.is_hacker:
         # Do not allow non active hackers
-        if (settings.HACKATHON_STARTED and not hacker_or_staff.active):
+        if (Settings.hackathon_is_happening() and not hacker_or_staff):
             return HttpResponseForbidden()
 
         # Activate hackers on login

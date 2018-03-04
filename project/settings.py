@@ -170,7 +170,7 @@ ADMINS = [('Admin', str(os.environ.get('ADMIN_ACCOUNT'))), ]
 FACEBOOK_KEY = os.environ.get('FACEBOOK_KEY')
 FACEBOOK_SECRET = os.environ.get('FACEBOOK_SECRET')
 FACEBOOK_HANDLE = os.environ.get('FACEBOOK_HANDLE')
-FACEBOOK_PERMISSIONS = eval(os.environ.get('FACEBOOK_PERMISSIONS', '[]'))
+FACEBOOK_PERMISSIONS = eval(os.environ.get('FACEBOOK_PERMISSIONS', '["email"]'))
 
 # GitHub Stuff
 GITHUB_KEY = os.environ.get('GITHUB_KEY')

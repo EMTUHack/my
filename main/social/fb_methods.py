@@ -62,6 +62,7 @@ def auth_url(request):
         kvps['scope'] = ",".join(perms)
 
     # Return the url
+    print(url + urlencode(kvps))
     return url + urlencode(kvps)
 
 
