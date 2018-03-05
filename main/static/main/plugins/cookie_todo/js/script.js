@@ -121,6 +121,10 @@ function onKeyPress(event) {
 }
 
 $(document).ready(function() {
+	// Prevent this from running before the hacker has confirmed their presence
+	if (hacker_is_confirmed != 'True'){
+		return;
+	}
 
 	inputBox = $('input[name="add-to-list"]');
 
