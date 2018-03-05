@@ -4,7 +4,7 @@ azure.csv
 surveys/
 events/
 node_modules/
-dump.rdb
+*.rdb
 *.sublime-project
 
 # Byte-compiled / optimized / DLL files
