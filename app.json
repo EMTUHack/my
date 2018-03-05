@@ -86,7 +86,7 @@
         "USE_MAILCHIMP": {
             "description": "Whether or not to use mailchimp",
             "value": "False"
-        },
+        }
     },
     "keywords": ["python", "hackathon", "django"]
 }
