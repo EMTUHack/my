@@ -190,7 +190,7 @@ EVENT_RULES = os.environ.get('EVENT_RULES')
 AZURE_PASSES = os.environ.get('AZURE_PASSES', None)
 
 # MailChimp
-USE_MAILCHIMP = os.environ.get('USE_MAILCHIMP', False)
+USE_MAILCHIMP = eval(os.environ.get('USE_MAILCHIMP', 'False').capitalize())
 MAILCHIMP_USER = os.environ.get('MAILCHIMP_USER', None)
 MAILCHIMP_SECRET = os.environ.get('MAILCHIMP_SECRET', None)
 MAILCHIMP_LIST_PRE = os.environ.get('MAILCHIMP_LIST_PRE', None)
@@ -198,3 +198,6 @@ MAILCHIMP_LIST_CONFIRMED = os.environ.get('MAILCHIMP_LIST_CONFIRMED', None)
 
 # Celery stuff
 CELERY_BROKER_URL = str(os.environ.get('REDIS_URL'))
+
+# Google Analytics
+GOOGLE_ANALYTICS = os.environ.get('GOOGLE_ANALYTICS', '')

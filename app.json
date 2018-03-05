@@ -98,6 +98,10 @@
         "USE_MAILCHIMP": {
             "description": "Whether or not to use mailchimp",
             "value": "False"
+        },
+        "GOOGLE_ANALYTICS": {
+            "description": "Google Analytics tracking ID",
+            "required": false
         }
     },
     "keywords": ["python", "hackathon", "django"]
