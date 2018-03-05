@@ -1,5 +1,11 @@
 {
     "name": "My Hackathon",
+    "addons": [
+        "heroku-redis",
+        {
+            "plan": "hobby-dev",
+        }
+    ],
     "env": {
         "DJANGO_SECRET": {
             "description": "Django's secret key",
@@ -27,15 +33,18 @@
         },
         "EVENT_RULES": {
             "description": "URL to the event rules",
-            "value": ""
+            "value": "",
+            "required": false
         },
         "HELPER": {
             "description": "URL of your helper app",
-            "value": "https://helper.yourdomain.com"
+            "value": "https://helper.yourdomain.com",
+            "required": false
         },
         "CHAT": {
             "description": "URL of your chat app",
-            "value": "https://chat.yourdomain.com"
+            "value": "https://chat.yourdomain.com",
+            "required": false
         },
         "ROOT_URL": {
             "description": "App's root url",
@@ -50,7 +59,9 @@
             "value": "bot@example.com"
         },
         "EMAIL_PASSWORD": "bot@example.com",
-        "FACEBOOK_HANDLE": "",
+        "FACEBOOK_HANDLE": {
+            "required": false
+        },
         "FACEBOOK_KEY": {
             "description": "Facebook App ID",
             "value": "12345"
@@ -69,19 +80,23 @@
         },
         "MAILCHIMP_USER": {
             "description": "MailChimp user for mailchimp integration",
-            "value": ""
+            "value": "",
+            "required": false
         },
         "MAILCHIMP_SECRET": {
             "description": "MailChimp secret for mailchimp integration",
-            "value": ""
+            "value": "",
+            "required": false
         },
         "MAILCHIMP_LIST_PRE": {
             "description": "MailChimp list id of the pre_confirmation user list",
-            "value": ""
+            "value": "",
+            "required": false
         },
         "MAILCHIMP_LIST_CONFIRMED": {
             "description": "MailChimp list id of the post_confirmation user list",
-            "value": ""
+            "value": "",
+            "required": false
         },
         "USE_MAILCHIMP": {
             "description": "Whether or not to use mailchimp",
