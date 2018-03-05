@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'facebook/remove_facebook/$', views.remove_facebook, name='remove_facebook'),
     url(r'facebook/login/$', views.facebook_login, name='facebook_login'),
     url(r'facebook/login_response/$', views.facebook_login_response, name='facebook_login_response'),
-    url(r'github/remove_facebook/$', views.remove_github, name='remove_github'),
+    url(r'github/remove_github/$', views.remove_github, name='remove_github'),
     url(r'github/login/$', views.github_login, name='github_login'),
     url(r'github/login_response/$', views.github_login_response, name='github_login_response'),
 
