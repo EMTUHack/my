@@ -7,9 +7,8 @@ from requests.exceptions import HTTPError
 if settings.MAILCHIMP_USER is None or not settings.USE_MAILCHIMP:
     client = None
 else:
-    client = MailChimp(settings.MAILCHIMP_SECRET, settings.MAILCHIMP_USER)
-
-client = None
+    # client = MailChimp(settings.MAILCHIMP_SECRET, settings.MAILCHIMP_USER)
+    client = None
 
 
 def use_mailchimp():
