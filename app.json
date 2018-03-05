@@ -1,5 +1,5 @@
 {
-    "name": "My Hack the Campus",
+    "name": "My Hackathon",
     "env": {
         "DJANGO_SECRET": {
             "description": "Django's secret key",
@@ -8,6 +8,10 @@
         "ALLOWED_HOSTS": {
             "description": "List of hosts to allow",
             "value": "['*']"
+        },
+        "DEBUG": {
+            "description": "Whether the app is in debug mode",
+            "value": "true"
         },
         "HACKATHON_NAME": {
             "description": "Name your event!",
@@ -20,6 +24,10 @@
         "TOKEN_SIZE": {
             "description": "Max hacker token size. (Bigger == secure & impractical)",
             "value": "6"
+        },
+        "EVENT_RULES": {
+            "description": "URL to the event rules",
+            "value": ""
         },
         "HELPER": {
             "description": "URL of your helper app",
@@ -59,22 +67,6 @@
             "description": "GitHub App Secret",
             "value": "s3cret"
         },
-        "HACKATHON_STARTED": {
-            "description": "'true' if it has, 'false' otherwise",
-            "value": "false"
-        },
-        "HACKATHON_ENDED": {
-            "description": "'true' if it has, 'false' otherwise",
-            "value": "false"
-        },
-        "APPLICATION_OPEN": {
-            "description": "'true' if it is, 'false' otherwise",
-            "value": "true"
-        },
-        "DEBUG": {
-            "description": "Allow or disallow debug mode",
-            "value": "true"
-        },
         "MAILCHIMP_USER": {
             "description": "MailChimp user for mailchimp integration",
             "value": ""
@@ -90,6 +82,10 @@
         "MAILCHIMP_LIST_CONFIRMED": {
             "description": "MailChimp list id of the post_confirmation user list",
             "value": ""
+        },
+        "USE_MAILCHIMP": {
+            "description": "Whether or not to use mailchimp",
+            "value": "False"
         },
     },
     "keywords": ["python", "hackathon", "django"]
