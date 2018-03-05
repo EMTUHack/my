@@ -9,6 +9,8 @@ if settings.MAILCHIMP_USER is None or not settings.USE_MAILCHIMP:
 else:
     client = MailChimp(settings.MAILCHIMP_SECRET, settings.MAILCHIMP_USER)
 
+client = None
+
 
 def use_mailchimp():
     return settings.USE_MAILCHIMP
