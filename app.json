@@ -1,10 +1,7 @@
 {
     "name": "My Hackathon",
     "addons": [
-        "heroku-redis",
-        {
-            "plan": "hobby-dev",
-        }
+        "heroku-redis"
     ],
     "env": {
         "DJANGO_SECRET": {
