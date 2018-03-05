@@ -1,7 +1,22 @@
 var inputBox;
 
 function first_run() {
-	l = ["RG", "ID da Universidade", "Notebook", "Carregadores", "Caderno e Caneta", "Travesseiro", "Saco de Dormir", "Escova/Pasta de Dente"]
+	l = [
+		"RG",
+		"ID da Universidade",
+		"Notebook",
+		"(vários) Carregadores",
+		"Baralho pro truco",
+		"Fone de ouvido",
+		"Caderno e caneta",
+		"Travesseiro",
+		"Energético",
+		"Escova/Pasta de dente",
+		"Aquela sua ideia pra uma startup unicórnio",
+		"Desodorante",
+		"Guarda-chuva",
+		"Cracking the code interview",
+	]
 	for (item in l)
 	{
 		inputBox.val(l[item]);
