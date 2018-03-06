@@ -56,7 +56,7 @@ class ApplicationForm(forms.ModelForm):
             'cv2_type': 'Outro tipo de Currículo',
             'cv2': 'URL de outro Currículo',
             'facebook': 'facebook.com/',
-            'sleeping_bag': '<div style="color: gray;" id="sleeping" ><i class="ui icon external share"></i>Saco de Dormir(R$ 40)</div>',
+            'sleeping_bag': '<div style="color: gray;" id="sleeping" ><i class="ui icon external share"></i>Saco de Dormir(R$ 70)</div>',
             'pillow': '<div style="color: gray;" id="pillow"><i class="ui icon external share"></i>Travesseiro(R$ 35)</div>',
             'description': 'Eu me descreveria como...*',
             'essay': 'Por que você quer participar do {}?'.format(settings.HACKATHON_NAME),
@@ -64,6 +64,8 @@ class ApplicationForm(forms.ModelForm):
 
         widgets = {
             'description': forms.fields.TextInput(attrs={'placeholder': 'iOS Master, Data Scientist, Hacker, Designer...'}),
+            'special_needs': forms.fields.TextInput(attrs={'placeholder': 'Só responder se tiver'}),
+            'diet': forms.fields.TextInput(attrs={'placeholder': 'Só responder se tiver'}),
         }
 
     def save(self, commit=True, hacker=None):
