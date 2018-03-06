@@ -25,7 +25,8 @@ User.add_to_class('is_hacker', is_hacker)
 GENDER_TYPES = (
     ('M', 'Masculino'),
     ('F', 'Feminino'),
-    ('O', 'Outro')
+    ('O', 'Outro'),
+    ('NA', 'Prefiro não dizer'),
 )
 SHIRT_SIZES = (
     ('P', 'P'),
@@ -368,7 +369,7 @@ class Application(models.Model):
     # Communication
     phone = models.CharField(max_length=20, null=True, blank=True)
     # Basic
-    gender = models.CharField(max_length=1, choices=GENDER_TYPES)
+    gender = models.CharField(max_length=2, choices=GENDER_TYPES)
     age = models.IntegerField(validators=[MinValueValidator(18, "A idade mínima é 18 anos.")])
     university = models.CharField(max_length=100)
     enroll_year = models.IntegerField(null=True)
