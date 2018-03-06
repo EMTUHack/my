@@ -115,7 +115,12 @@
                                 <div class="field {% if form.cv.errors.as_text %}error{% endif %}">
                                     <label>{{ form.cv.label | safe}}</label>
                                     <span style="color: red" class="small">{{ form.cv.errors.as_text }}</span>
-                                    {{ form.cv }}
+                                    <div class="ui input labeled">
+                                        <div id="cv_label" class="ui label">
+                                            http://
+                                        </div>
+                                        {{ form.cv }}
+                                    </div>
                                 </div>
                             </div>
                             <div class="two fields">
@@ -127,7 +132,12 @@
                                 <div class="field {% if form.cv.errors.as_text %}error{% endif %}">
                                     <label>{{ form.cv2.label}}</label>
                                     <span style="color: red" class="small">{{ form.cv2.errors.as_text }}</span>
-                                    {{ form.cv2 }}
+                                    <div class="ui input labeled">
+                                        <div id="cv2_label" class="ui label">
+                                            http://
+                                        </div>
+                                        {{ form.cv2 }}
+                                    </div>
                                 </div>
                             </div>
                             <br />
@@ -191,7 +201,46 @@
         position : 'bottom center',
         on: 'click',
         title   : 'Por que currículos?',
-        content : 'Precisamos de seu currículo válido pois essa é a forma como \'pagamos\' a Microsoft. Eles querem recrutar vocês e estão dispostos a cobrir todos os nossos custos por isso. Portanto, exigimos que todos os participantes nos dêem seus currículos válidos.'
+        content : 'Precisamos de seu currículo válido pois essa é a forma como \'pagamos\' nossos patrocinadores. Eles querem recrutar vocês e estão dispostos a cobrir todos os nossos custos por isso. Portanto, exigimos que todos os participantes nos dêem seus currículos válidos.'
     });
+
+    var ll = {
+        "GH": "github.com/",
+        "WS": "https://",
+        "LI": "linkedin.com/in/",
+        "OT": "https://"
+    }
+    function change_cv_option(cv) {
+        if (cv == 0) {
+            cv_id_select = '#id_cv_type';
+            cv_label_select = '#cv_label';
+        }
+        else {
+            cv_id_select = '#id_cv2_type';
+            cv_label_select = '#cv2_label';
+        }
+        if ($(cv_id_select).val() == '') {
+            $(cv_label_select).parent().removeClass('labeled');
+            $(cv_label_select).removeClass('ui label');
+            $(cv_label_select).text('');
+        }
+        else {
+            $(cv_label_select).addClass('ui label');
+            $(cv_label_select).parent().addClass('labeled');
+            $(cv_label_select).text(ll[$(cv_id_select).val()]);
+        }
+    }
+
+    $("#id_cv_type").change(function () {
+        change_cv_option(0);
+    })
+    $("#id_cv2_type").change(function () {
+        change_cv_option(1);
+    })
+
+    $(document).ready(function() {
+        change_cv_option(0);
+        change_cv_option(1);
+    })
 </script>
 {% endblock %}
