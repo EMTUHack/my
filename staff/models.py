@@ -70,12 +70,13 @@ class Staff(models.Model):
 def staff_creation(sender, instance, **kwargs):
     if kwargs['created']:
         instance.new_token()
-        user = User(
-            username=instance.email,
-            email=instance.email,
-            password=get_random_string(length=12)
-        )
-        user.set_unusable_password()
-        user.save()
-        instance.user = user
+        if getattr(instance, 'user', None) is None:
+            user = User(
+                username=instance.email,
+                email=instance.email,
+                password=get_random_string(length=12)
+            )
+            user.set_unusable_password()
+            user.save()
+            instance.user = user
         instance.save()
