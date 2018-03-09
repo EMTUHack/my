@@ -18,6 +18,12 @@ class ApplicationBasicForm(forms.ModelForm):
             'email': 'Email*',
         }
 
+    def clean_email(self):
+        email = super().clean_email()
+        if email == 'temp@email.com':
+            raise forms.ValidationError('Você precisa fornecer um email válido!')
+        return email
+
     def save(self, commit=True):
         instance = forms.ModelForm.save(self, False)
         pre_instance = Hacker.objects.get(id=instance.id)

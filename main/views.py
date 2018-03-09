@@ -395,6 +395,10 @@ def send_verify_email(request):
 def check_verify_email(request, code):
     obj = get_object_or_404(Hacker, verification_code=code)
     obj.unverified = False
+    user = obj.user
+    user.username = obj.email
+    user.email = obj.email
+    user.save()
     obj.new_verification_code()
     login(request, obj.user)
     return redirect('dashboard')

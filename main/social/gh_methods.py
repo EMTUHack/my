@@ -107,6 +107,9 @@ def login_successful(code, request):
     obj.first_name = obj.first_name if getattr(obj, 'first_name', '') else first_name
     obj.last_name = obj.last_name if getattr(obj, 'last_name', '') else last_name
     obj.email = obj.email if getattr(obj, 'email', '') else email
+    # Fix empty email edge case
+    if obj.email == '':
+        obj.email = 'temp@email.com'
     obj.save()
 
     # Try to login the user
