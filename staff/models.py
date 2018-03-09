@@ -79,13 +79,3 @@ def staff_creation(sender, instance, **kwargs):
         user.save()
         instance.user = user
         instance.save()
-
-
-# Process staff deletion
-@receiver(post_delete, sender=Staff, dispatch_uid="staff_deletion")
-def staff_deletion(sender, instance, **kwargs):
-    try:
-        if getattr(instance, 'user'):
-            instance.user.delete()
-    except ObjectDoesNotExist:
-        pass
