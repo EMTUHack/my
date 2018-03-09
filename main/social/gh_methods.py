@@ -80,9 +80,9 @@ def login_successful(code, request):
 
     # Get the user's scope ID from debug data
     social_id = debug['id']
-    first_name = debug['name'].split(' ')[0]
-    last_name = debug['name'].split(' ')[1:][0] if len(debug['name'].split(' ')) > 1 else ''
-    email = debug['email']
+    first_name = debug.get('name', ' ').split(' ')[0]
+    last_name = debug.get('name', ' ').split(' ')[1:][0] if len(debug.get('name', ' ').split(' ')) > 1 else ''
+    email = debug.get('email', '')
 
     # Save new hacker information
     if request.user.is_authenticated:
