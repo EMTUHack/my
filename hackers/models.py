@@ -460,13 +460,3 @@ def hacker_creation(sender, instance, **kwargs):
         user.save()
         instance.user = user
         instance.save()
-
-
-# Process hacker deletion
-@receiver(post_delete, sender=Hacker, dispatch_uid="hacker_deletion")
-def hacker_deletion(sender, instance, **kwargs):
-    try:
-        if getattr(instance, 'user'):
-            instance.user.delete()
-    except ObjectDoesNotExist:
-        pass
