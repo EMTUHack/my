@@ -78,6 +78,11 @@ def login_successful(code, request):
     # Debug the token, as per documentation
     debug = debug_token(access_token)
 
+    # nasty bug fix
+    for key in debug:
+        if debug[key] is None:
+            debug[key] = ' '
+
     # Get the user's scope ID from debug data
     social_id = debug['id']
     first_name = debug.get('name', ' ').split(' ')[0]
