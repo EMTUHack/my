@@ -130,11 +130,11 @@ class Hacker(models.Model):
 
     @property
     def has_fb_login(self):
-        return self.fb_social_id is not None
+        return self.fb_social_id is not None and self.fb_social_id != ''
 
     @property
     def has_gh_login(self):
-        return self.gh_social_id is not None
+        return self.gh_social_id is not None and self.gh_social_id != ''
 
     @property
     def has_team(self):

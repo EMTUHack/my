@@ -46,7 +46,7 @@ class Staff(models.Model):
 
     @property
     def has_gh_login(self):
-        return self.gh_social_id is not None and self.fb_social_id != ''
+        return self.gh_social_id is not None and self.gh_social_id != ''
 
     @property
     def name(self):
