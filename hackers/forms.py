@@ -48,7 +48,7 @@ class ApplicationForm(forms.ModelForm):
 
     class Meta:
         model = Application
-        fields = ['phone', 'gender', 'age', 'university', 'enroll_year', 'diet', 'special_needs', 'shirt_size', 'shirt_style', 'cv_type', 'cv', 'cv2_type', 'cv2', 'facebook', 'description']
+        fields = ['phone', 'gender', 'age', 'university', 'enroll_year', 'diet', 'special_needs', 'shirt_size', 'shirt_style', 'cv_type', 'cv', 'cv2_type', 'cv2', 'facebook', 'description', 'essay']
         labels = {
             'phone': 'Telefone',
             'gender': 'Gênero*',
