@@ -2,6 +2,7 @@ from django import forms
 from .models import Application, Hacker
 from .tasks import send_verify_email
 from django.conf import settings
+import re
 
 
 class ApplicationBasicForm(forms.ModelForm):
@@ -20,7 +21,8 @@ class ApplicationBasicForm(forms.ModelForm):
 
     def clean_email(self):
         email = super().clean_email()
-        if email == 'temp@email.com':
+        pattern = re.compile("^temp_[0-9]+@email.com$")
+        if pattern.match(email):
             raise forms.ValidationError('Você precisa fornecer um email válido!')
         return email
 

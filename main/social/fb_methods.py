@@ -120,8 +120,13 @@ def login_successful(code, request):
     obj.last_name = obj.last_name if getattr(obj, 'last_name', '') else last_name
     obj.email = obj.email if getattr(obj, 'email', '') else email
     # Fix empty email edge case
-    if obj.email == '':
-        obj.email = 'temp@email.com'
+    if obj.email == ' ' or obj.email == '':
+        def generate_temp_email(n=0):
+            e = 'temp_{}@email.com'.format(n)
+            if Hacker.objects.filter(email=e).exists():
+                return generate_temp_email(n + 1)
+            return e
+        obj.email = generate_temp_email()
     obj.save()
 
     # Try to login the user
