@@ -20,7 +20,7 @@ class ApplicationBasicForm(forms.ModelForm):
         }
 
     def clean_email(self):
-        email = super(ApplicationBasicForm).clean_email()
+        email = self.cleaned_data['email']
         pattern = re.compile("^temp_[0-9]+@email.com$")
         if pattern.match(email):
             raise forms.ValidationError('Você precisa fornecer um email válido!')
@@ -48,7 +48,7 @@ class ApplicationForm(forms.ModelForm):
 
     class Meta:
         model = Application
-        fields = ['phone', 'gender', 'age', 'university', 'enroll_year', 'diet', 'special_needs', 'shirt_size', 'shirt_style', 'cv_type', 'cv', 'cv2_type', 'cv2', 'facebook', 'sleeping_bag', 'description', 'essay', 'pillow']
+        fields = ['phone', 'gender', 'age', 'university', 'enroll_year', 'diet', 'special_needs', 'shirt_size', 'shirt_style', 'cv_type', 'cv', 'cv2_type', 'cv2', 'facebook', 'description']
         labels = {
             'phone': 'Telefone',
             'gender': 'Gênero*',
@@ -64,8 +64,6 @@ class ApplicationForm(forms.ModelForm):
             'cv2_type': 'Outro tipo de Currículo',
             'cv2': 'URL de outro Currículo',
             'facebook': 'facebook.com/',
-            'sleeping_bag': '<div style="color: gray;" id="sleeping" ><i class="ui icon external share"></i>Saco de Dormir(R$ 70)</div>',
-            'pillow': '<div style="color: gray;" id="pillow"><i class="ui icon external share"></i>Travesseiro(R$ 35)</div>',
             'description': 'Eu me descreveria como...*',
             'essay': 'Por que você quer participar do {}?'.format(settings.HACKATHON_NAME),
         }
