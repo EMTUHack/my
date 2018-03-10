@@ -20,7 +20,7 @@ class ApplicationBasicForm(forms.ModelForm):
         }
 
     def clean_email(self):
-        email = super().clean_email()
+        email = super(ApplicationBasicForm).clean_email()
         pattern = re.compile("^temp_[0-9]+@email.com$")
         if pattern.match(email):
             raise forms.ValidationError('Você precisa fornecer um email válido!')
