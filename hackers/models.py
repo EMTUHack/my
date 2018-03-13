@@ -380,8 +380,8 @@ class Application(models.Model):
     shirt_size = models.CharField(max_length=3, choices=SHIRT_SIZES)
     shirt_style = models.CharField(max_length=15, choices=SHIRT_STYLE)
     # CV
-    cv_type = models.CharField(max_length=3, choices=CV_TYPES, null=True, blank=False)
-    cv = models.CharField(max_length=300, null=True, blank=False)
+    cv_type = models.CharField(max_length=3, choices=CV_TYPES, null=True, blank=True)
+    cv = models.CharField(max_length=300, null=True, blank=True)
     cv2_type = models.CharField(max_length=3, choices=CV_TYPES, null=True, blank=True)
     cv2 = models.CharField(max_length=300, null=True, blank=True)
     facebook = models.CharField(max_length=100, null=True, blank=True)
