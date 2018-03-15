@@ -77,15 +77,35 @@
                                 </div>
                             </div>
                             <div class="two fields">
-                                <div class="field {% if form.university.errors.as_text %}error{% endif %}">
-                                    <label>{{ form.university.label}}</label>
-                                    <span style="color: red" class="small">{{ form.university.errors.as_text }}</span>
-                                    {{ form.university }}
+                                <div class="field  {% if form.university.errors.as_text %}error{% endif %}">
+                                    <label>{{ form.university.label }}</label>
+                                    <select value='{{form.university.value}}' id="id_university" name="university" class="ui fluid search dropdown">
+                                        <option value="">Digite sua Universidade</option>
+                                        <option value="Unicamp">Unicamp</option>
+                                        <option value="USP SP">USP SP</option>
+                                        <option value="USP SC">USP SC</option>
+                                        <option value="PUCCAMP">PUCCAMP</option>
+                                        <option value="UFSCAR">UFSCAR</option>
+                                        <option value="PUC SP">PUC SP</option>
+                                        <option value="UNIFESP">UNIFESP</option>
+                                    </select>
                                 </div>
                                 <div class="field {% if form.enroll_year.errors.as_text %}error{% endif %}">
                                     <label>{{ form.enroll_year.label}}</label>
                                     <span style="color: red" class="small">{{ form.enroll_year.errors.as_text }}</span>
                                     {{ form.enroll_year }}
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div id="bus_sc_field" style="display: none;" class="field ui toggle checkbox {% if form.bus_sc.errors.as_text %}error{% endif %}">
+                                    <span style="color: red" class="small">{{ form.bus_sc.errors.as_text }}</span>
+                                    {{ form.bus_sc }}
+                                    <label>{{ form.bus_sc.label | safe }}</label>
+                                </div>
+                                <div id="bus_sp_field" style="display: none;" class="field ui toggle checkbox {% if form.bus_sp.errors.as_text %}error{% endif %}">
+                                    <span style="color: red" class="small">{{ form.bus_sp.errors.as_text }}</span>
+                                    {{ form.bus_sp }}
+                                    <label>{{ form.bus_sp.label | safe }}</label>
                                 </div>
                             </div>
                             <br />
@@ -150,7 +170,7 @@
                                 <span style="color: red" class="small">{{ form.essay.errors.as_text }}</span>
                                 {{ form.essay }}
                             </div>
-                            <!-- <br />
+                            <br />
                             <div id="pop_target" class="divided title">Compras</div>
                             <div class="subheader">Os itens abaixo são opcionais e não são gratuitos. Estão disponíveis a preço de custo e são comprados sob demanda. Clique em seus nomes para obter mais informações.<br>Você deve pagar por eles em dinheiro no ato de check-in.<br>Não será necessário devolver após o evento</div>
                             <br />
@@ -165,7 +185,7 @@
                                     {{ form.pillow }}
                                     <label>{{ form.pillow.label | safe}}</label>
                                 </div>
-                            </div> -->
+                            </div>
 
                             <br>
                             <div class="ui divider"></div>
@@ -195,11 +215,11 @@
         target   : '#pop_target',
         html  : '<h4>Travesseiro (R$ 35)</h4><p>Travesseiro para usar como travesseiro ou almofada</p><p>Será semelhante a <a href="https://goo.gl/P5wN7Q" target="_blank">esse</a></p><p>Valor final pode variar um pouco com disponibilidade e a diferença será cobrada/devolvida</p>'});
 
-    $('#why').popup({
+    $('.why').popup({
         position : 'bottom center',
-        on: 'click',
-        title   : 'Por que currículos?',
-        content : 'Precisamos de seu currículo válido pois essa é a forma como \'pagamos\' nossos patrocinadores. Eles querem recrutar vocês e estão dispostos a cobrir todos os nossos custos por isso. Portanto, exigimos que todos os participantes nos dêem seus currículos válidos.'
+        on: 'hover',
+        title   : 'Transporte?',
+        content : 'Estamos oferecendo transporte gratuito da sua cidade para o {{ hackathon_name }} e de volta. As vagas são limitadas e serão atribuídas por ordem cronológica de envio da aplicação, portanto só declare que precisa de transporte se realmente precisar.'
     });
 
     var ll = {
@@ -240,5 +260,31 @@
         change_cv_option(0);
         change_cv_option(1);
     })
+    var pre_bus_sp = '{{ form.bus_sp.value }}';
+    var pre_bus_sc = '{{ form.bus_sc.value }}';
+    $('#id_university').dropdown({
+        allowAdditions: true,
+        onChange: function(value) {
+            $("#bus_sc_field").hide();
+            $("#bus_sc_field").checkbox('uncheck');
+            $("#bus_sp_field").hide();
+            $("#bus_sp_field").checkbox('uncheck');
+            if (value == 'USP SC' || value == 'UFSCAR') {
+                $("#bus_sc_field").show();
+                if (pre_bus_sc == 'True') {
+                    $("#bus_sc_field").checkbox('check');
+                    pre_bus_sc = 'False'
+                }
+            }
+            if (value == 'USP SP') {
+                $("#bus_sp_field").show();
+                if (pre_bus_sp == 'True') {
+                    $("#bus_sp_field").checkbox('check');
+                    pre_bus_sp = 'False'
+                }
+            }
+        }});
+    if ("{{ form.university.value }}" != "None")
+        $('#id_university').dropdown("set selected", "{{ form.university.value }}");
 </script>
 {% endblock %}

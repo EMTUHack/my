@@ -31,7 +31,7 @@
       #login > .container > .content .button {
         color: white; }
         #login > .container > .content .button.login {
-          background: whitesmoke; }
+          background: #c2c2c2; }
         #login > .container > .content .button.register {
           background: #1D1D1B; }
       #login > .container > .content .forgot {
@@ -240,9 +240,9 @@
     #dashboard .status .state.waitlist {
       background: #1D1D1B; }
     #dashboard .status .state.admitted {
-      background: whitesmoke; }
+      background: #52524c; }
     #dashboard .status .state.confirmed {
-      background: #706F6F; }
+      background: #c2c2c2; }
     #dashboard .status .state.checkedin {
       background: #3d3c3c; }
     #dashboard .status .state.declined {

@@ -185,6 +185,7 @@ HACKATHON_NAME = os.environ.get('HACKATHON_NAME')
 HELPER = os.environ.get('HELPER')
 CHAT = os.environ.get('CHAT')
 EVENT_RULES = os.environ.get('EVENT_RULES')
+DATA_URL = os.environ.get('DATA_URL')
 
 # Sponsor
 AZURE_PASSES = os.environ.get('AZURE_PASSES', None)

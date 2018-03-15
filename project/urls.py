@@ -31,7 +31,7 @@ urlpatterns = [
     url(r'^', include('staff.urls', namespace='staff')),
     url(r'^', include('schedule.urls', namespace='schedule')),
     url(r'^$', views.index, name='index'),
-    url(r'^logout$', logout, {'next_page': '/'}, name='logout'),
+    url(r'^logout', logout, {'next_page': '/'}, name='logout'),
     url(r'^dashboard$', views.dashboard, name='dashboard'),
     url(r'^team$', views.team, name='team'),
     url(r'^godmode/$', views.admin, name='admin'),
@@ -46,6 +46,7 @@ urlpatterns = [
     url(r'^godmode/export/teams$', views.export_teams, name='export_teams'),
     url(r'^godmode/export/teams_after$', views.export_teams_after, name='export_teams_after'),
     url(r'^godmode/export/staff$', views.export_staff, name='export_staff'),
+    url(r'^godmode/export/bus_passengers$', views.export_bus_passengers, name='export_bus_passengers'),
     url(r'^godmode/export/events$', views.export_events, name='export_events'),
     url(r'^godmode/error$', views.test_error, name='test_error'),
 

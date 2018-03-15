@@ -48,7 +48,7 @@ class ApplicationForm(forms.ModelForm):
 
     class Meta:
         model = Application
-        fields = ['phone', 'gender', 'age', 'university', 'enroll_year', 'diet', 'special_needs', 'shirt_size', 'shirt_style', 'cv_type', 'cv', 'cv2_type', 'cv2', 'facebook', 'description', 'essay']
+        fields = ['phone', 'gender', 'age', 'university', 'enroll_year', 'diet', 'special_needs', 'shirt_size', 'shirt_style', 'cv_type', 'cv', 'cv2_type', 'cv2', 'facebook', 'description', 'essay', 'bus_sp', 'bus_sc', 'sleeping_bag', 'pillow']
         labels = {
             'phone': 'Telefone',
             'gender': 'Gênero*',
@@ -66,6 +66,10 @@ class ApplicationForm(forms.ModelForm):
             'facebook': 'facebook.com/',
             'description': 'Eu me descreveria como...*',
             'essay': 'Por que você quer participar do {}?'.format(settings.HACKATHON_NAME),
+            'bus_sc': 'Preciso de transporte <a class="why">Como assim?</a>',
+            'bus_sp': 'Preciso de transporte <a class="why">Como assim?</a>',
+            'pillow': '<div style="color: gray;" id="pillow"><i class="ui icon external share"></i>Travesseiro(R$ 35)</div>',
+            'sleeping_bag': '<div style="color: gray;" id="sleeping" ><i class="ui icon external share"></i>Saco de Dormir(R$ 70)</div>',
         }
 
         widgets = {

@@ -373,6 +373,7 @@ class Application(models.Model):
     age = models.IntegerField(validators=[MinValueValidator(18, "A idade mínima é 18 anos.")])
     university = models.CharField(max_length=100)
     enroll_year = models.IntegerField(null=True)
+    created = models.DateTimeField(auto_now_add=True)
     # Needs
     diet = models.CharField(max_length=100, default="", null=True, blank=True)
     special_needs = models.CharField(max_length=100, default="", null=True, blank=True)
@@ -391,10 +392,25 @@ class Application(models.Model):
     # Purchase
     sleeping_bag = models.BooleanField(default=False)
     pillow = models.BooleanField(default=False)
+    # Bus tickets
+    bus_sc = models.BooleanField(default=False)
+    bus_sp = models.BooleanField(default=True)
 
     @property
     def shirt_string(self):
         return "[{}]{} {}".format(self.gender, self.shirt_size, self.shirt_style)
+
+    @property
+    def eligible_bus_spot(self):
+        if self.bus_sp:
+            sp = Application.objects.filter(hacker__confirmed=True).filter(bus_sp=True).filter(created__lte=self.created)
+            if len(sp) < Settings.get().max_bus_spots:
+                return True
+        elif self.bus_sc:
+            sc = Application.objects.filter(hacker__confirmed=True).filter(bus_sc=True).filter(created__lte=self.created)
+            if len(sc) < Settings.get().max_bus_spots:
+                return True
+        return False
 
     @property
     def extras(self):
@@ -409,7 +425,7 @@ class Application(models.Model):
 
         return '<br>'.join(res)
 
-    def export_fields(self, exclude=['gender', 'shirt_size', 'shirt_style', 'special_needs', 'diet', 'essay']):
+    def export_fields(self, exclude=['gender', 'shirt_size', 'shirt_style', 'special_needs', 'diet', 'essay', 'bus_sp', 'bus_sc']):
         fields = OrderedDict([
             ('phone', 'Celular'),
             ('age', 'Idade'),
@@ -427,6 +443,8 @@ class Application(models.Model):
             ('facebook', 'Facebook'),
             ('description', 'Descrição'),
             ('essay', 'Motivação'),
+            ('bus_sp', 'Transporte de SP'),
+            ('bus_sc', 'Transporte de SC')
         ])
         res = OrderedDict()
         for ex in exclude:

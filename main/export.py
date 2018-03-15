@@ -1,5 +1,6 @@
 import csv
 from hackers.models import Hacker, Application, Team
+from main.models import Settings
 from staff.models import Staff
 from schedule.models import Event
 from django.http import HttpResponse
@@ -41,6 +42,36 @@ def basic_staff(request):
             obj.last_name,
             obj.email,
             obj.token
+        ])
+    return response
+
+
+def bus_passengers(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=bus_passengers.csv'
+    writer = csv.writer(response, csv.excel)
+    writer.writerow([
+        "First Name",
+        "Last Name",
+        "Email",
+        "University",
+        "From",
+    ])
+    for obj in Application.objects.filter(hacker__confirmed=True).filter(bus_sp=True)[:Settings.get().max_bus_spots]:
+        writer.writerow([
+            obj.hacker.first_name,
+            obj.hacker.last_name,
+            obj.hacker.email,
+            obj.university,
+            'São Paulo'
+        ])
+    for obj in Application.objects.filter(hacker__confirmed=True).filter(bus_sc=True)[:Settings.get().max_bus_spots]:
+        writer.writerow([
+            obj.hacker.first_name,
+            obj.hacker.last_name,
+            obj.hacker.email,
+            obj.university,
+            'São Carlos'
         ])
     return response
 

@@ -9,10 +9,23 @@
     <div class="column">
         <div class="ui left aligned bulleted list">
             <div class="item">O evento começa no dia {{ hack_settings.hackathon_start }} e vai até o dia {{ hack_settings.hackathon_end }}</div>
-            <div class="item"><b>O período de check-in é das 15:30 às 16:30 do dia {{ hack_settings.hackathon_start.day }}.</b> Não aceitaremos hackers após esse horário</div>
+            <div class="item"><b>O período de check-in é das 7:30 às 8:30 do dia {{ hack_settings.hackathon_start.day }}.</b> Não aceitaremos hackers após esse horário</div>
             <div class="item">Não se esqueça de levar a sua identidade universitária(RA, número USP, etc). Vamos verificar na entrada</div>
             <div class="item"><b>Se informe!</b> Leia as <a target="_blank" href="{{ rules }}">regras do evento e os critérios de avaliação!</a></div>
-            <div class="item"><b>Não é de campinas?</b> <a href="mailto:{{ hackathon_email }}">Fale conosco</a>! Chances são que nós temos um ônibus saindo de graça da sua cidade pro evento</div>
+            {% if user.hacker.application.bus_sp or user.hacker.application.bus_sc %}
+            {% if user.hacker.application.eligible_bus_spot %}
+            <div class="item">
+                <b>Sua vaga no ônibus para o {{ hackathon_name }} está garantida!</b><br>
+            </div>
+            {% else %}
+            <div class="item">
+                <b>Infelizmente não há mais vagas no ônibus para o {{ hackathon_name }} :(</b>
+            </div>
+            {% endif %}
+            {% endif %}
+            <div class="item">
+                Precisa de mais informações? <a href="mailto:{{ hackathon_email }}">Fale conosco</a>!
+            </div>
         </div>
     </div>
 </div>

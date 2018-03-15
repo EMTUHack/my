@@ -245,8 +245,10 @@ def stats(request):
         "f_g": len(Application.objects.filter(shirt_style="Babylook").filter(shirt_size="G").filter(hacker__confirmed=True)),
         "f_gg": len(Application.objects.filter(shirt_style="Babylook").filter(shirt_size="GG").filter(hacker__confirmed=True)),
         # Extras
-        "sleep": len(Application.objects.filter(sleeping_bag=True)),
-        "pill": len(Application.objects.filter(pillow=True)),
+        "sleep": len(Application.objects.filter(sleeping_bag=True).filter(hacker__confirmed=True)),
+        "pill": len(Application.objects.filter(pillow=True).filter(hacker__confirmed=True)),
+        "bus_sp": len(Application.objects.filter(bus_sp=True).filter(hacker__confirmed=True)),
+        "bus_sc": len(Application.objects.filter(bus_sc=True).filter(hacker__confirmed=True)),
         "diet": Counter([d.diet.lower() for d in Application.objects.exclude(diet__isnull=True).exclude(diet__exact='').filter(hacker__confirmed=True)]).most_common(),
         "needs": Counter([d.special_needs.lower() for d in Application.objects.exclude(special_needs__isnull=True).exclude(special_needs__exact='').filter(hacker__confirmed=True)]).most_common(),
         "motivations_1": Counter(motivations_1).most_common(10),
@@ -353,6 +355,11 @@ def export_teams_after(request):
 @user_passes_test(lambda u: u.is_superuser)
 def export_staff(request):
     return basic_staff(request)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def export_bus_passengers(request):
+    return bus_passengers(request)
 
 
 @user_passes_test(lambda u: u.is_superuser)

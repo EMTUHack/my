@@ -21,6 +21,7 @@ class Settings(models.Model):
     hackathon_start = models.DateTimeField(auto_now_add=True)
     hackathon_end = models.DateTimeField(auto_now_add=True)
     max_hackers = models.IntegerField(default=100)
+    max_bus_spots = models.IntegerField(default=32)
 
     @staticmethod
     def get():

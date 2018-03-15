@@ -55,7 +55,7 @@
                             </p>
                         </div>
                         {% include 'main/dash_sections/team.html' %}
-                        {% include 'main/dash_sections/azure_info.html' %}
+                        {# {% include 'main/dash_sections/azure_info.html' %} #}
                         {% include 'main/dash_sections/data.html' %}
                         {% include 'main/dash_sections/software.html' %}
                         {% include 'main/dash_sections/access.html' %}
@@ -110,6 +110,17 @@
                             <p>
                                 <b>Não confirmar sua presença até esse dia significará a perda de seu lugar no evento!</b>
                             </p>
+                            {% if user.hacker.application.bus_sp or user.hacker.application.bus_sc %}
+                            {% if user.hacker.application.eligible_bus_spot %}
+                            <p>
+                                <b>Sua vaga no ônibus para o {{ hackathon_name }} estará garantida se você confirmar agora</b>
+                            </p>
+                            {% else %}
+                            <p>
+                                <b>Infelizmente não há mais vagas no ônibus para o {{ hackathon_name }} :(</b>
+                            </p>
+                            {% endif %}
+                            {% endif %}
                             <a href="{% url 'hackers:confirm_presence' %}" class="ui blue button">
                                 Confirmar presença!
                             </a>

@@ -21,17 +21,21 @@
                 <a href="{% url 'team' %}" class="fill-div">Equipe</a>
             </div>
             <div class="item {% if sbar == 'data' %}active{% endif %}">
-                <a href="http://lampiao.ic.unicamp.br/transparencia/" class="fill-div">Dados</a>
+                <a href="{{ data_url }}" class="fill-div">Dados</a>
             </div>
             <div class="item {% if sbar == 'eventos' %}active{% endif %}">
                 <a href="{% url 'schedule:schedule' %}" class="fill-div">Eventos</a>
             </div>
+            {% if helper is not None %}
             <div class="item">
                 <a href="{{ helper }}" class="fill-div">Helper</a>
             </div>
+            {% endif %}
+            {% if chat is not None %}
             <div class="item">
                 <a href="{{ chat }}" class="fill-div">Chat</a>
             </div>
+            {% endif %}
             {% endif %}
 
             {% if user.is_superuser %}

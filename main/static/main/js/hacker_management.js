@@ -9,6 +9,18 @@ function load_data_into_modal(data) {
     $("#hacker_shirt_size").text(data['Tamanho da Camisa']);
     $("#hacker_shirt_style").text(data['Tipo da Camisa']);
     $("#hacker_cv_type").text(data['Tipo do Currículo']);
+    if (data['Transporte de SP'] == true) {
+        $("#hacker_bus_sp").text("Sim");
+    }
+    else {
+        $("#hacker_bus_sp").text("Não");
+    }
+    if (data['Transporte de SC'] == true) {
+        $("#hacker_bus_sc").text("Sim");
+    }
+    else {
+        $("#hacker_bus_sc").text("Não");
+    }
     $("#hacker_cv").text(data['Currículo']);
     $("has_other_cv").hide();
     if (data['Tipo do Currículo 2'] != null) {
@@ -55,6 +67,7 @@ function show_pending(id) {
                                     csrfmiddlewaretoken: csrf
                                 },
                                 success: function(data) {
+                                    swal("Pronto!", "Hacker admitido!", "success");
                                     reload_pending_hackers();
                                 }
                             });
@@ -83,6 +96,7 @@ function show_pending(id) {
                                     csrfmiddlewaretoken: csrf
                                 },
                                 success: function(data) {
+                                    swal("Pronto!", "Hacker recusado!", "success");
                                     reload_pending_hackers();
                                 }
                             });
@@ -131,6 +145,7 @@ function show_admitted(id) {
                                     csrfmiddlewaretoken: csrf
                                 },
                                 success: function(data) {
+                                    swal("Pronto!", "Hacker recusado!", "success");
                                     reload_admitted_hackers();
                                 }
                             });
@@ -178,6 +193,7 @@ function show_declined(id) {
                                     csrfmiddlewaretoken: csrf
                                 },
                                 success: function(data) {
+                                    swal("Pronto!", "Hacker admitido!", "success");
                                     reload_declined_hackers();
                                 }
                             });
@@ -225,6 +241,7 @@ function show_waitlist(id) {
                                     csrfmiddlewaretoken: csrf
                                 },
                                 success: function(data) {
+                                    swal("Pronto!", "Hacker tirado da fila!", "success");
                                     reload_waitlist_hackers();
                                 }
                             });

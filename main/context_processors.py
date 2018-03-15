@@ -17,5 +17,6 @@ def hackathon_info(request):
         "chat": settings.CHAT,
         "root_url": settings.ROOT_URL,
         "max_team_size": settings.TEAM_MAX_SIZE,
-        "ga_tracking_id": settings.GOOGLE_ANALYTICS
+        "ga_tracking_id": settings.GOOGLE_ANALYTICS,
+        "data_url": settings.DATA_URL,
     }
