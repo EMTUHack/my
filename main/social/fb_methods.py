@@ -38,7 +38,8 @@ def canv_url(request):
     if request.is_secure():
         return 'https://' + request.get_host() + reverse('main:facebook_login_response')
     else:
-        return 'http://' + request.get_host() + reverse('main:facebook_login_response')
+        # Enforce https
+        return 'https://' + request.get_host() + reverse('main:facebook_login_response')
 
 
 def auth_url(request):
