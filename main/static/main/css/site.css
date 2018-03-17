@@ -131,6 +131,9 @@
       margin-right: auto;
       vertical-align: middle;
       width: 42%; }
+  @media screen and (max-width: 600px) {
+    #sidebar .sponsor {
+      visibility: hidden; } }
   #sidebar + .tab {
     position: fixed;
     width: 55px;

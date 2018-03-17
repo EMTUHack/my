@@ -89,6 +89,11 @@
       width: 42%;
     }
   }
+  @media screen and (max-width: 600px) {
+    .sponsor {
+      visibility: hidden;
+    }
+  }
 
   // Tab is the sibling of the sidebar
   +.tab {
