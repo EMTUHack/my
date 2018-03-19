@@ -37,8 +37,8 @@ class Staff(models.Model):
     active = models.BooleanField(default=False)
 
     # Social Login
-    fb_social_id = models.CharField(max_length=50, null=True, blank=True, unique=True)
-    gh_social_id = models.CharField(max_length=50, null=True, blank=True, unique=True)
+    fb_social_id = models.CharField(max_length=50, null=True, blank=True, unique=False)
+    gh_social_id = models.CharField(max_length=50, null=True, blank=True, unique=False)
 
     @property
     def has_fb_login(self):

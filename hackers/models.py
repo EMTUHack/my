@@ -122,11 +122,11 @@ class Hacker(models.Model):
     confirmed = models.BooleanField(default=False)
 
     # Social Login
-    fb_social_id = models.CharField(max_length=50, null=True, blank=True, unique=True)
-    gh_social_id = models.CharField(max_length=50, null=True, blank=True, unique=True)
+    fb_social_id = models.CharField(max_length=50, null=True, blank=True, unique=False)
+    gh_social_id = models.CharField(max_length=50, null=True, blank=True, unique=False)
 
     # Sponsor
-    azure_pass = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    # azure_pass = models.CharField(max_length=100, null=True, blank=True, unique=True)
 
     @property
     def has_fb_login(self):
