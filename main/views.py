@@ -186,6 +186,13 @@ def admit_hacker(request):
 
 
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def nag_hacker(request):
+    hacker = get_object_or_404(Hacker, id=request.POST['id'])
+    hacker.nag()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def decline_hacker(request):
     hacker = get_object_or_404(Hacker, id=request.POST['id'])
     hacker.decline()

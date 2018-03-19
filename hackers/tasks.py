@@ -1,5 +1,5 @@
 from __future__ import absolute_import, unicode_literals
-from main.email import notify_admitted, notify_decline, notify_waitlist, notify_unwaitlist, verify_email
+from main.email import notify_admitted, notify_nag, notify_decline, notify_waitlist, notify_unwaitlist, verify_email
 from celery import shared_task
 
 
@@ -8,6 +8,13 @@ def send_notify_admitted(hacker_id):
     from .models import Hacker
     hacker = Hacker.objects.get(id=hacker_id)
     return notify_admitted(hacker)
+
+
+@shared_task
+def send_notify_nag(hacker_id):
+    from .models import Hacker
+    hacker = Hacker.objects.get(id=hacker_id)
+    return notify_nag(hacker)
 
 
 @shared_task

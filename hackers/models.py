@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.validators import MinValueValidator
 import requests
 from main.models import Settings
-from .tasks import send_notify_admitted, send_notify_unwaitlist, send_notify_waitlist, send_notify_decline
+from .tasks import send_notify_admitted, send_notify_unwaitlist, send_notify_waitlist, send_notify_decline, send_notify_nag
 from collections import OrderedDict
 # Create your models here.
 
@@ -232,6 +232,11 @@ class Hacker(models.Model):
             return self.put_on_waitlist()
         send_notify_admitted.delay(self.id)
 
+    def nag(self):
+        # Send nag notification remembering that
+        # the hacker has been admitted
+        send_notify_nag.delay(self.id)
+
     def decline(self):
         self.admitted = False
         self.declined = True
@@ -264,6 +269,8 @@ class Hacker(models.Model):
     def confirm(self):
         self.confirmed = True
         self.save()
+
+        send_notify_waitlist.delay(self.id)
 
     # Enter or Create Team method
     def enter_team(self, name):

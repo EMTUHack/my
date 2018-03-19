@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'api/change_hackathon_end/$', views.change_hackathon_end, name='hackathon_end'),
     url(r'api/change_max_hackers/$', views.change_max_hackers, name='max_hackers'),
     url(r'api/admit_hacker/$', views.admit_hacker, name='admit_hacker'),
+    url(r'api/nag_hacker/$', views.nag_hacker, name='nag_hacker'),
     url(r'api/decline_hacker/$', views.decline_hacker, name='decline_hacker'),
     url(r'api/unwaitlist_hacker/$', views.unwaitlist_hacker, name='unwaitlist_hacker'),
     url(r'api/fetch_submitted_hackers/$', views.fetch_submitted_hackers, name='fetch_submitted_hackers'),

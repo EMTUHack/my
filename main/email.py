@@ -106,6 +106,31 @@ def notify_admitted(hacker):
     )
 
 
+def notify_nag(hacker):
+    context = {
+        'title': '[Lembrete] Informações importantes',
+        'subtitle': 'Leia tudo!',
+        'description': 'Avaliamos sua aplicação e queremos você no {}!<br><b>Atenção!</b> Seu próximo passo é acessar seu <b>>my<</b> novamente para confirmar seu interesse em participar.<br><br><b>Não confirmar seu interesse resultará na perda de sua vaga!</b><br><br><b>Não tem interesse?</b> Declare que vai se abster para que sua vaga possa ser cedida a alguém na fila de espera.'.format(hack_name),
+        'actionUrl': settings.ROOT_URL + reverse('main:login_from_token', args={hacker.token}),
+        'actionName': 'Acessar sua conta',
+        'project_url': settings.ROOT_URL,
+        'hackathon_name': hack_name,
+        'facebookHandle': settings.FACEBOOK_HANDLE
+    }
+    to = hacker.email
+    fr = str(hack_name)
+    msg_plain = render_to_string('main/email/action/text.txt', context)
+    msg_html = render_to_string('main/email/action/html.html', context)
+
+    send_mail(
+        '[{}] Ação necessária!'.format(hack_name),
+        msg_plain,
+        fr,
+        [to],
+        html_message=msg_html,
+    )
+
+
 def notify_waitlist(hacker):
     context = {
         'title': 'Foi por pouco!',

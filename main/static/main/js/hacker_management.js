@@ -124,6 +124,35 @@ function show_admitted(id) {
             hide_modal_actions();
             $('#admitted_actions').show();
             $('.ui.modal').modal({
+                'onApprove': function() {
+                    swal(data['Primeiro Nome'] + ' ' + data['Sobrenome'], "Reenviar lembrete de aprovação?", "warning", {
+                        buttons: {
+                            check: {
+                                text: "Sim!",
+                            },
+                            cancel: "Deixa pra lá!",
+                        },
+                    }).then((value) => {
+                        switch (value) {
+
+                            case "check":
+                            $.ajax(
+                            {
+                                url: nag_hacker_url,
+                                type: 'post',
+                                data: {
+                                    id: id,
+                                    csrfmiddlewaretoken: csrf
+                                },
+                                success: function(data) {
+                                    swal("Pronto!", "Lembrete Enviado!", "success");
+                                    reload_admitted_hackers();
+                                }
+                            });
+                            break;
+                        }
+                    });
+                },
                 'onDeny': function() {
                     swal(data['Primeiro Nome'] + ' ' + data['Sobrenome'], "Rejeitar Hacker?", "warning", {
                         buttons: {

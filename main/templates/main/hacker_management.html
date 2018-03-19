@@ -339,6 +339,10 @@ input[type="search"] {
             Rejeitar
             <i class="exclamation icon"></i>
         </div>
+        <div class="ui positive right labeled icon button">
+            Reenviar lembrete
+            <i class="repeat icon"></i>
+        </div>
     </div>
     <div id="declined_actions" class="actions">
         <div class="ui positive right labeled icon button">
@@ -357,6 +361,7 @@ input[type="search"] {
     var csrf = "{{ csrf_token }}";
     var get_hacker_application_url = "{% url 'main:get_hacker_application' %}";
     var admit_hacker_url = "{% url 'main:admit_hacker' %}";
+    var nag_hacker_url = "{% url 'main:nag_hacker' %}";
     var decline_hacker_url = "{% url 'main:decline_hacker' %}";
     var unwaitlist_hacker_url = "{% url 'main:unwaitlist_hacker' %}";
     var fetch_submitted_hackers_url = "{% url 'main:fetch_submitted_hackers' %}";
