@@ -21,12 +21,12 @@ function load_data_into_modal(data) {
     else {
         $("#hacker_bus_sc").text("Não");
     }
-    $("#hacker_cv").text(data['Currículo']);
+    $("#hacker_cv").html("<a href='" + data['Currículo'] + "' target='_blank'>" + data['Currículo'] + "</a>");
     $("has_other_cv").hide();
     if (data['Tipo do Currículo 2'] != null) {
         $("has_other_cv").show();
         $("#hacker_cv2_type").text(data['Tipo do Currículo 2']);
-        $("#hacker_cv2").text(data['Currículo 2']);
+        $("#hacker_cv2").html("<a href='" + data['Currículo 2'] + "' target='_blank'>" + data['Currículo 2'] + "</a>");
     }
     $('#hacker_description').text(data['Descrição']);
     $('#hacker_essay').text(data['Motivação']);

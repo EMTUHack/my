@@ -78,6 +78,32 @@ class ApplicationForm(forms.ModelForm):
             'diet': forms.fields.TextInput(attrs={'placeholder': 'Só responder se tiver'}),
         }
 
+    def clean_cv(self):
+        cv = self.cleaned_data['cv']
+        if cv == '':
+            return cv
+        cv_type = self.cleaned_data['cv_type']
+        if cv_type == 'LI' and cv.find('linkedin.com/in/') < 0:
+            cv = "https://linkedin.com/in/{}".format(cv)
+        if cv_type == 'GH' and cv.find('github.com/') < 0:
+            cv = "https://github.com/{}".format(cv)
+        if cv.find("://") < 0:
+            cv = "https://{}".format(cv)
+        return cv
+
+    def clean_cv2(self):
+        cv = self.cleaned_data['cv2']
+        if cv == '':
+            return cv
+        cv_type = self.cleaned_data['cv2_type']
+        if cv_type == 'LI' and cv.find('linkedin.com/in/') < 0:
+            cv = "https://linkedin.com/in/{}".format(cv)
+        if cv_type == 'GH' and cv.find('github.com/') < 0:
+            cv = "https://github.com/{}".format(cv)
+        if cv.find("://") < 0:
+            cv = "https://{}".format(cv)
+        return cv
+
     def save(self, commit=True, hacker=None):
         instance = forms.ModelForm.save(self, False)
         instance.hacker = hacker
