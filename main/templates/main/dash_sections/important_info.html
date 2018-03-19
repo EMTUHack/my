@@ -10,7 +10,7 @@
         <div class="ui left aligned bulleted list">
             <div class="item">O evento começa no dia {{ hack_settings.hackathon_start }} e vai até o dia {{ hack_settings.hackathon_end }}</div>
             <div class="item"><b>O período de check-in é das 7:30 às 8:30 do dia {{ hack_settings.hackathon_start.day }}.</b> Não aceitaremos hackers após esse horário</div>
-            <div class="item">Não se esqueça de levar a sua identidade universitária(RA, número USP, etc). Vamos verificar na entrada</div>
+            <!-- <div class="item">Não se esqueça de levar a sua identidade universitária(RA, número USP, etc). Vamos verificar na entrada</div> -->
             <div class="item"><b>Se informe!</b> Leia as <a target="_blank" href="{{ rules }}">regras do evento e os critérios de avaliação!</a></div>
             {% if user.hacker.application.bus_sp or user.hacker.application.bus_sc %}
             {% if user.hacker.application.eligible_bus_spot %}
