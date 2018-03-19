@@ -98,7 +98,7 @@ def login_successful(code, request):
     extra_data = graph.get_object(str(social_id) + '/?fields=last_name,first_name,email')
     last_name = extra_data['last_name']
     first_name = extra_data['first_name']
-    email = extra_data['email']
+    email = extra_data.get('email', '')
 
     # Save new hacker or staff information
     if request.user.is_authenticated:
