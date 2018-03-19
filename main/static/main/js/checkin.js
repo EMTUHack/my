@@ -17,6 +17,7 @@ function search_hackers() {
                 columns: [
                 { title: "Nome" },
                 { title: "Email" },
+                { title: "Camisa" },
                 { title: "Extras" },
                 { title: "Check-in" },
                 ],

@@ -422,8 +422,8 @@ class Application(models.Model):
     @property
     def extras(self):
         extras = {
-            'pillow': "Travesseiro",
-            "sleeping_bag": "Saco de Dormir($40)",
+            'pillow': "Travesseiro($35)",
+            "sleeping_bag": "Saco de Dormir($70)",
         }
         res = []
         for extra, text in extras.items():

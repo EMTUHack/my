@@ -165,6 +165,7 @@ def search_hacker(request):
     return HttpResponse(json.dumps([[
         hacker.name,
         hacker.email,
+        hacker.application.shirt_string,
         hacker.application.extras,
         '<button class="ui small blue button" type="button" onclick="sweet(\'' + hacker.name + '\', ' + str(hacker.id) + ')">Check-in</button>'
     ] for hacker in hackers]), content_type="application/json")
