@@ -8,6 +8,7 @@ function load_data_into_modal(data) {
     $("#hacker_enroll_year").text(data['Ano de Ingresso']);
     $("#hacker_shirt_size").text(data['Tamanho da Camisa']);
     $("#hacker_shirt_style").text(data['Tipo da Camisa']);
+    $("#hacker_cv_type").text("");
     $("#hacker_cv_type").text(data['Tipo do Currículo']);
     if (data['Transporte de SP'] == true) {
         $("#hacker_bus_sp").text("Sim");
@@ -21,11 +22,14 @@ function load_data_into_modal(data) {
     else {
         $("#hacker_bus_sc").text("Não");
     }
+    $("#hacker_cv").text("");
     $("#hacker_cv").html("<a href='" + data['Currículo'] + "' target='_blank'>" + data['Currículo'] + "</a>");
     $("has_other_cv").hide();
     if (data['Tipo do Currículo 2'] != null) {
         $("has_other_cv").show();
+        $("#hacker_cv2_type").text("");
         $("#hacker_cv2_type").text(data['Tipo do Currículo 2']);
+        $("#hacker_cv2").text("");
         $("#hacker_cv2").html("<a href='" + data['Currículo 2'] + "' target='_blank'>" + data['Currículo 2'] + "</a>");
     }
     $('#hacker_description').text(data['Descrição']);
