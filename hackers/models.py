@@ -270,8 +270,6 @@ class Hacker(models.Model):
         self.confirmed = True
         self.save()
 
-        send_notify_waitlist.delay(self.id)
-
     # Enter or Create Team method
     def enter_team(self, name):
         team = Team.objects.filter(name=name).first()
