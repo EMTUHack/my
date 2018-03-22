@@ -11,7 +11,13 @@ def hacker_or_staff(self):
     return self.hacker if hasattr(self, 'hacker') else self.staff
 
 
+@property
+def is_hacker_or_staff(self):
+    return hasattr(self, 'hacker') or hasattr(self, 'staff')
+
+
 User.add_to_class('hacker_or_staff', hacker_or_staff)
+User.add_to_class('is_hacker_or_staff', is_hacker_or_staff)
 
 
 class Settings(models.Model):

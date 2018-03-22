@@ -58,6 +58,7 @@ def login_from_token(request, token="42"):
 
 
 @login_required
+@user_passes_test(lambda u: u.is_hacker_or_staff)
 def dashboard(request):
     return render(request, 'main/dashboard.html', {"sbar": "dashboard"})
 

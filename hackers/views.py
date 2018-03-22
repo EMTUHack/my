@@ -16,7 +16,7 @@ import io
 
 
 @login_required
-@user_passes_test(lambda u: Settings.registration_is_open() and (u.hacker.is_unverified or u.hacker.is_incomplete or u.hacker.is_submitted))
+@user_passes_test(lambda u: hasattr(u, 'hacker') and Settings.registration_is_open() and (u.hacker.is_unverified or u.hacker.is_incomplete or u.hacker.is_submitted))
 def application(request):
     app_instance = getattr(request.user.hacker, 'application', None)
     if request.method == 'POST':
@@ -38,8 +38,8 @@ def application(request):
     return render(request, 'hackers/application.html', {'form': form, 'formbasic': formbasic, "sbar": "application"})
 
 
-@user_passes_test(lambda u: Settings.can_confirm() and u.is_hacker and u.hacker.is_admitted)
 @login_required
+@user_passes_test(lambda u: Settings.can_confirm() and u.is_hacker and u.hacker.is_admitted)
 def confirm_presence(request):
     hacker = request.user.hacker
     hacker.confirm()
