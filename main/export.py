@@ -120,7 +120,7 @@ def basic_unconfirmed(request):
 
 def basic_no_application(request):
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=basic_unconfirmed.csv'
+    response['Content-Disposition'] = 'attachment; filename=basic_no_application.csv'
     writer = csv.writer(response, csv.excel)
     writer.writerow([
         "First Name",
