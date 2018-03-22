@@ -341,6 +341,11 @@ def export_basic_info_unconfirmed(request):
 
 
 @user_passes_test(lambda u: u.is_superuser)
+def export_basic_info_no_application(request):
+    return basic_no_application(request)
+
+
+@user_passes_test(lambda u: u.is_superuser)
 def export_advanced_info(request):
     return advanced(request, [], [])
 

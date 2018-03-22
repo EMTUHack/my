@@ -108,7 +108,7 @@ def basic_unconfirmed(request):
         "Token",
     ])
     for obj in Hacker.objects.all():
-        if not obj.finished_application:
+        if obj.is_admitted:
             writer.writerow([
                 obj.first_name,
                 obj.last_name,
@@ -117,6 +117,26 @@ def basic_unconfirmed(request):
             ])
     return response
 
+
+def basic_no_application(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=basic_unconfirmed.csv'
+    writer = csv.writer(response, csv.excel)
+    writer.writerow([
+        "First Name",
+        "Last Name",
+        "Email",
+        "Token",
+    ])
+    for obj in Hacker.objects.all():
+        if not obj.finished_application:
+            writer.writerow([
+                obj.first_name,
+                obj.last_name,
+                obj.email,
+                obj.token
+            ])
+    return response
 
 def advanced(request, exclude_hacker=[], exclude_application=[]):
     response = HttpResponse(content_type='text/csv')
