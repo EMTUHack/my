@@ -2,7 +2,7 @@ import facebook
 from django.conf import settings
 from django.shortcuts import reverse
 from urllib.parse import urlencode
-from django.contrib.auth import login
+from django.contrib.auth import login, models
 from django.contrib import messages
 from hackers.models import Hacker
 from staff.models import Staff
@@ -124,7 +124,7 @@ def login_successful(code, request):
     if obj.email == ' ' or obj.email == '':
         def generate_temp_email(n=0):
             e = 'temp_{}@email.com'.format(n)
-            if Hacker.objects.filter(email=e).exists():
+            if Hacker.objects.filter(email=e).exists() or models.User.objects.filter(username=e).exists():
                 return generate_temp_email(n + 1)
             return e
         obj.email = generate_temp_email()
