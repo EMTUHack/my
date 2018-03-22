@@ -393,7 +393,7 @@ class Application(models.Model):
     facebook = models.CharField(max_length=100, null=True, blank=True)
     # Extra
     description = models.CharField(max_length=100, null=True)
-    essay = models.TextField(null=True, blank=True)
+    essay = models.TextField(null=True, blank=False)
     # Purchase
     sleeping_bag = models.BooleanField(default=False)
     pillow = models.BooleanField(default=False)

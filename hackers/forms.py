@@ -65,7 +65,7 @@ class ApplicationForm(forms.ModelForm):
             'cv2': 'URL de outro Currículo',
             'facebook': 'facebook.com/',
             'description': 'Eu me descreveria como...*',
-            'essay': 'Por que você quer participar do {}?'.format(settings.HACKATHON_NAME),
+            'essay': 'Por que você quer participar do {}?*'.format(settings.HACKATHON_NAME),
             'bus_sc': 'Preciso de transporte <a class="why">Como assim?</a>',
             'bus_sp': 'Preciso de transporte <a class="why">Como assim?</a>',
             'pillow': '<div style="color: gray;" id="pillow"><i class="ui icon external share"></i>Travesseiro(R$ 35)</div>',
