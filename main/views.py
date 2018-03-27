@@ -216,8 +216,8 @@ def manual_cycle_waitlist(request):
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def search_people(request):
     data = request.POST['data']
-    hackers = Hacker.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data))[0:5]
-    staff = Staff.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data))[0:5]
+    hackers = Hacker.objects.filter(Q(full_name__icontains=data) | Q(email__icontains=data))[0:5]
+    staff = Staff.objects.filter(Q(full_name__icontains=data) | Q(email__icontains=data))[0:5]
     people = list(hackers)
     people.extend(list(staff))
 

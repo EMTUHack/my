@@ -84,6 +84,7 @@ class Hacker(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=200, default="", blank=True)
     email = models.EmailField(unique=True)
 
     @property
@@ -472,6 +473,7 @@ class Application(models.Model):
 # Process hacker creation
 @receiver(post_save, sender=Hacker, dispatch_uid="hacker_creation")
 def hacker_creation(sender, instance, **kwargs):
+    instance.full_name = "{} {}".format(instance.first_name.strip(), instance.last_name.strip())
     if kwargs['created']:
         instance.new_token()
         if getattr(instance, 'user', None) is None:

@@ -160,7 +160,7 @@ def import_hackers(request):
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def search_hacker(request):
     data = request.POST['data']
-    hackers = Hacker.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data) | Q(token__icontains=data))[0:10]
+    hackers = Hacker.objects.filter(Q(full_name__icontains=data) | Q(email__icontains=data) | Q(token__icontains=data))[0:10]
     hackers = [hacker for hacker in hackers if hacker.is_confirmed]
     return HttpResponse(json.dumps([[
         hacker.name,

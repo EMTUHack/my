@@ -32,6 +32,7 @@ class Staff(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=200, default="", blank=True)
     email = models.EmailField(unique=True)
     token = models.CharField(max_length=20, unique=True, null=True, blank=True)
     active = models.BooleanField(default=False)
@@ -68,6 +69,7 @@ class Staff(models.Model):
 # Process staff creation
 @receiver(post_save, sender=Staff, dispatch_uid="staff_creation")
 def staff_creation(sender, instance, **kwargs):
+    instance.full_name = "{} {}".format(instance.first_name.strip(), instance.last_name.strip())
     if kwargs['created']:
         instance.new_token()
         if getattr(instance, 'user', None) is None:
