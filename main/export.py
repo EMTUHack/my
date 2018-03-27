@@ -87,7 +87,7 @@ def basic_confirmed(request):
         "Token",
     ])
     for obj in Hacker.objects.all():
-        if obj.finished_application:
+        if obj.is_confirmed:
             writer.writerow([
                 obj.first_name,
                 obj.last_name,
