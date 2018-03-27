@@ -214,6 +214,56 @@ def manual_cycle_waitlist(request):
 
 
 @user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def search_people(request):
+    data = request.POST['data']
+    hackers = Hacker.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data))[0:5]
+    staff = Staff.objects.filter(Q(first_name__icontains=data) | Q(last_name__icontains=data) | Q(email__icontains=data))[0:5]
+    people = list(hackers)
+    people.extend(list(staff))
+
+    return HttpResponse(json.dumps([[
+        person.name,
+        person.email,
+        'Staff' if hasattr(person.user, 'staff') else 'Hacker',
+        '<button class="ui small blue button" type="button" onclick="convert(' + str(person.id) + ')">Converter</button>'
+    ] for person in people]), content_type="application/json")
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
+def convert_people(request):
+    p_id = request.POST['id']
+    try:
+        person = Hacker.objects.get(id=p_id)
+        hacker = True
+    except:
+        person = get_object_or_404(Staff, id=p_id)
+        hacker = False
+    if hacker:
+        person2 = Staff(
+            user=person.user,
+            first_name=person.first_name,
+            last_name=person.last_name,
+            email=person.email,
+            token=person.token,
+            fb_social_id=person.fb_social_id,
+            gh_social_id=person.gh_social_id
+        )
+    else:
+        person2 = Hacker(
+            user=person.user,
+            first_name=person.first_name,
+            last_name=person.last_name,
+            email=person.email,
+            token=person.token,
+            fb_social_id=person.fb_social_id,
+            gh_social_id=person.gh_social_id
+        )
+    person2.save()
+    person.delete()
+    return HttpResponse()
+
+
+@user_passes_test(lambda u: u.is_staff_member or u.is_superuser)
 def checkin(request):
     return render(request, 'main/checkin.html', {"sbar": "checkin"})
 

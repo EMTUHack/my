@@ -214,3 +214,59 @@ $(document).ready(function() {
         "ajax": fetch_schedule_simple_url,
     });
 });
+
+
+function search_people() {
+    var text = $("#search_people").val();
+    if (text.length == 0)
+        return;
+    $.ajax(
+    {
+        url: search_people_url,
+        type: 'post',
+        data: {
+            data: text,
+            csrfmiddlewaretoken: csrf
+        },
+        success: function(data) {
+            $("#example").empty();
+            $('#example').DataTable( {
+                data: data,
+                columns: [
+                { title: "Nome" },
+                { title: "Email" },
+                { title: "Tipo" },
+                { title: "Converter" },
+                ],
+                responsive: true,
+                searching: false,
+                lengthChange: false,
+                destroy: true,
+                paging: false
+            } );
+            console.log(data);
+        }
+    })
+}
+
+function convert(id) {
+    $.ajax(
+    {
+        url: convert_people_url,
+        type: 'post',
+        data: {
+            id: id,
+            csrfmiddlewaretoken: csrf
+        },
+        success: function(data) {
+            swal("Pronto!", "Conversão completa!", "success");
+            search_people();
+        }
+    })
+}
+
+$("#search_people").on('keyup', function (e) {
+    if (e.keyCode == 13) {
+        search_people();
+    }
+});

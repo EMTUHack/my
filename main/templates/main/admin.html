@@ -102,6 +102,23 @@
                             <a href="{% url 'main:manual_cycle_waitlist' %}" class="ui green button">
                                 Rodar lista de espera
                             </a>
+                            <br>
+                            <div class="ui divider"></div>
+                            <br>
+                            <div class="ui form">
+                                <div class="form">
+                                    <div class="title">
+                                        Converter enter hackers e staff
+                                    </div>
+                                </div>
+                                <p><b>Atenção:</b> a aplicação de hackers é perdida durante a conversão</p>
+                                <br />
+                                <div class="field">
+                                    <input maxlength="20" id="search_people" class="ui input" type="text" placeholder="Digite o nome ou email da pessoa...">
+                                </div>
+                                <button class="ui fluid blue button" type="button" onclick="search_people()"><i class="ui icon search"></i> Pesquisar</button>
+                                <table id="example" class="display" width="100%"></table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -448,6 +465,8 @@
     var check_in_hacker_url = "{% url 'hackers:check_in_hacker' %}";
     var get_hacker_check_in_url = "{% url 'hackers:get_hacker_check_in' %}";
 
+    var search_people_url = "{% url 'main:search_people' %}";
+    var convert_people_url = "{% url 'main:convert_people' %}";
     var registration_open_url = "{% url 'main:registration_open' %}";
     var registration_close_url = "{% url 'main:registration_close' %}";
     var confirm_by_url = "{% url 'main:confirm_by' %}";

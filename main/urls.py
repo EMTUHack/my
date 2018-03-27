@@ -33,4 +33,6 @@ urlpatterns = [
     url(r'api/fetch_waitlist_hackers/$', views.fetch_waitlist_hackers, name='fetch_waitlist_hackers'),
     url(r'api/fetch_checkedin_hackers/$', views.fetch_checkedin_hackers, name='fetch_checkedin_hackers'),
     url(r'^api/manual_cycle_waitlist', views.manual_cycle_waitlist, name='manual_cycle_waitlist'),
+    url(r'^api/search_people', views.search_people, name='search_people'),
+    url(r'^api/convert_people', views.convert_people, name='convert_people'),
 ]
