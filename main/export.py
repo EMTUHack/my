@@ -138,6 +138,7 @@ def basic_no_application(request):
             ])
     return response
 
+
 def advanced(request, exclude_hacker=[], exclude_application=[]):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=advanced.csv'

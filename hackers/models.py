@@ -337,7 +337,7 @@ class Hacker(models.Model):
             ('first_name', 'Primeiro Nome'),
             ('last_name', 'Sobrenome'),
             ('email', 'Email'),
-            ('checked_in', 'Atendeu'),
+            ('state', 'Estado'),
             ('team', 'Nome da Equipe')
         ])
         res = OrderedDict()
