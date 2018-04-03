@@ -173,6 +173,10 @@ class Hacker(models.Model):
         return ("unknown", "unknown")
 
     @property
+    def state_code(self):
+        return self.state[0]
+
+    @property
     def is_checkedin(self):
         # Is present at the event
         return self.state[0] == "checkedin"
@@ -337,7 +341,7 @@ class Hacker(models.Model):
             ('first_name', 'Primeiro Nome'),
             ('last_name', 'Sobrenome'),
             ('email', 'Email'),
-            ('state[0]', 'Estado'),
+            ('state_code', 'Estado'),
             ('team', 'Nome da Equipe')
         ])
         res = OrderedDict()
